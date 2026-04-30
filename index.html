@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PESRP Enrollment Lookup</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2330;
+    --border: #30363d;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --danger: #f85149;
+    --warn: #e3b341;
+    --pink: #d2a8ff;
+    --text: #e6edf3;
+    --muted: #7d8590;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; font-size: 14px; }
+
+  /* HEADER */
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    display: flex; align-items: center; gap: 16px;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .logo-mark {
+    width: 36px; height: 36px;
+    background: var(--accent2);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono); font-weight: 600; font-size: 13px; color: #0d1117;
+    flex-shrink: 0;
+  }
+  .header-title { font-size: 15px; font-weight: 600; letter-spacing: 0.01em; }
+  .header-sub { font-size: 12px; color: var(--muted); font-family: var(--mono); }
+  .header-badge {
+    margin-left: auto;
+    font-family: var(--mono); font-size: 11px; color: var(--accent2);
+    background: rgba(63,185,80,0.1); padding: 4px 10px; border-radius: 4px;
+    border: 1px solid rgba(63,185,80,0.2);
+  }
+
+  /* MAIN */
+  main { max-width: 960px; margin: 0 auto; padding: 28px 24px; }
+
+  /* SEARCH PANEL */
+  .search-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 22px;
+    margin-bottom: 24px;
+  }
+  .panel-label {
+    font-size: 11px; font-family: var(--mono); color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 14px;
+  }
+  .search-row { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
+  .search-group { display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 200px; }
+  .search-group label { font-size: 11px; color: var(--muted); font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.06em; }
+
+  input[type="text"], input[type="number"] {
+    background: var(--surface2); border: 1px solid var(--border);
+    color: var(--text); padding: 9px 14px; border-radius: 6px;
+    font-family: var(--mono); font-size: 14px; letter-spacing: 0.05em;
+    transition: border-color 0.15s; width: 100%;
+  }
+  input:focus { outline: none; border-color: var(--accent); }
+  input::placeholder { color: var(--muted); }
+
+  .btn-primary {
+    background: var(--accent2); color: #0d1117;
+    border: none; padding: 9px 24px; border-radius: 6px;
+    font-family: var(--mono); font-weight: 600; font-size: 13px;
+    cursor: pointer; transition: opacity 0.15s, transform 0.1s;
+    white-space: nowrap; align-self: flex-end; height: 38px;
+  }
+  .btn-primary:hover { opacity: 0.85; }
+  .btn-primary:active { transform: scale(0.97); }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  .btn-secondary {
+    background: transparent; color: var(--muted);
+    border: 1px solid var(--border); padding: 9px 18px; border-radius: 6px;
+    font-family: var(--mono); font-size: 12px;
+    cursor: pointer; transition: color 0.15s, border-color 0.15s;
+    white-space: nowrap; align-self: flex-end; height: 38px;
+  }
+  .btn-secondary:hover { color: var(--text); border-color: var(--muted); }
+
+  /* PROGRESS */
+  .progress-wrap { margin-top: 16px; display: none; }
+  .progress-wrap.visible { display: block; }
+  .progress-text { font-family: var(--mono); font-size: 12px; color: var(--accent); margin-bottom: 6px; }
+  .progress-bar-bg { background: var(--surface2); border-radius: 4px; height: 4px; overflow: hidden; border: 1px solid var(--border); }
+  .progress-bar-fill { height: 100%; background: var(--accent2); border-radius: 4px; transition: width 0.3s ease; width: 0%; }
+
+  /* ERROR */
+  .error-msg { display: none; margin-top: 12px; padding: 10px 14px; border-radius: 6px; background: rgba(248,81,73,0.1); border: 1px solid rgba(248,81,73,0.25); color: var(--danger); font-family: var(--mono); font-size: 12px; }
+  .error-msg.visible { display: block; }
+
+  /* SCHOOL INFO CARDS */
+  .info-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px; margin-bottom: 20px; display: none;
+  }
+  .info-grid.visible { display: grid; }
+  .info-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 14px 16px;
+  }
+  .info-card-label { font-size: 10px; font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin-bottom: 6px; }
+  .info-card-value { font-size: 18px; font-family: var(--mono); font-weight: 600; color: var(--accent); }
+  .info-card-value.green { color: var(--accent2); }
+  .info-card-sub { font-size: 11px; color: var(--muted); font-family: var(--mono); margin-top: 3px; }
+
+  /* SCHOOL NAME BANNER */
+  .school-banner {
+    display: none; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px 20px; margin-bottom: 16px;
+    align-items: center; gap: 14px;
+  }
+  .school-banner.visible { display: flex; }
+  .school-banner-icon {
+    width: 40px; height: 40px; background: rgba(88,166,255,0.12);
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+  .school-banner-name { font-size: 15px; font-weight: 600; margin-bottom: 3px; }
+  .school-banner-meta { font-size: 12px; color: var(--muted); font-family: var(--mono); }
+  .school-banner-emis {
+    margin-left: auto; font-family: var(--mono); font-size: 12px;
+    color: var(--accent); background: rgba(88,166,255,0.1);
+    padding: 4px 10px; border-radius: 4px; border: 1px solid rgba(88,166,255,0.2);
+    flex-shrink: 0;
+  }
+
+  /* ENROLLMENT TABLE */
+  .table-section { display: none; }
+  .table-section.visible { display: block; }
+  .table-header {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+  }
+  .table-title { font-size: 13px; font-weight: 600; font-family: var(--mono); letter-spacing: 0.04em; }
+  .table-badge {
+    font-size: 11px; font-family: var(--mono); padding: 2px 9px;
+    border-radius: 10px; background: rgba(63,185,80,0.1);
+    color: var(--accent2); border: 1px solid rgba(63,185,80,0.2);
+  }
+  .table-scroll { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; }
+  thead { background: var(--surface2); }
+  th {
+    padding: 10px 16px; text-align: left;
+    font-size: 11px; font-family: var(--mono); font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted);
+    white-space: nowrap; border-bottom: 1px solid var(--border);
+  }
+  th.right { text-align: right; }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: rgba(255,255,255,0.03); }
+  tbody tr.total-row { background: var(--surface2); }
+  tbody tr.total-row:hover { background: var(--surface2); }
+  td { padding: 10px 16px; font-size: 13px; }
+  td.num { font-family: var(--mono); text-align: right; }
+  td.male { color: var(--accent); }
+  td.female { color: var(--pink); }
+  td.total-col { color: var(--accent2); font-weight: 600; }
+  td.class-name { font-family: var(--mono); font-weight: 600; font-size: 13px; }
+  td.bold { font-family: var(--mono); font-weight: 600; }
+
+  /* BAR VISUAL */
+  .bar-wrap { display: flex; align-items: center; gap: 6px; justify-content: flex-end; }
+  .bar { height: 10px; border-radius: 2px; min-width: 2px; display: inline-block; }
+  .bar-m { background: var(--accent); }
+  .bar-f { background: var(--pink); }
+
+  /* GENDER SUMMARY */
+  .gender-summary {
+    display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 14px;
+  }
+  .gender-chip {
+    display: flex; align-items: center; gap: 7px;
+    font-family: var(--mono); font-size: 12px; color: var(--muted);
+  }
+  .gender-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+  /* EMPTY STATE */
+  .empty-state {
+    text-align: center; padding: 70px 20px;
+    color: var(--muted); font-family: var(--mono); font-size: 13px;
+  }
+  .empty-state .icon { font-size: 40px; margin-bottom: 14px; }
+
+  /* HISTORY */
+  .history-panel { margin-top: 28px; }
+  .history-label { font-size: 11px; font-family: var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
+  .history-list { display: flex; flex-wrap: wrap; gap: 8px; }
+  .history-chip {
+    font-family: var(--mono); font-size: 12px;
+    padding: 4px 12px; border-radius: 20px;
+    background: var(--surface); border: 1px solid var(--border); color: var(--muted);
+    cursor: pointer; transition: color 0.15s, border-color 0.15s;
+  }
+  .history-chip:hover { color: var(--accent2); border-color: var(--accent2); }
+
+  /* RAW JSON TOGGLE */
+  .raw-toggle {
+    font-family: var(--mono); font-size: 11px; color: var(--muted);
+    cursor: pointer; display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 0; user-select: none; transition: color 0.15s; margin-top: 14px;
+  }
+  .raw-toggle:hover { color: var(--text); }
+  .raw-pre {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 6px; padding: 12px; font-family: var(--mono);
+    font-size: 11px; color: var(--accent); overflow-x: auto;
+    margin-top: 8px; white-space: pre-wrap; word-break: break-all; display: none;
+  }
+
+  @media (max-width: 600px) {
+    main { padding: 14px; }
+    .search-row { flex-direction: column; }
+    .search-group { min-width: 100%; }
+    .btn-primary, .btn-secondary { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-mark">EN</div>
+  <div>
+    <div class="header-title">PESRP Enrollment Lookup</div>
+    <div class="header-sub">Class-wise Gender Enrollment by EMIS Code</div>
+  </div>
+  <div class="header-badge" id="headerBadge">Ready</div>
+</header>
+
+<main>
+
+  <!-- SEARCH -->
+  <div class="search-panel">
+    <div class="panel-label">🔍 Search School by EMIS Code</div>
+    <div class="search-row">
+      <div class="search-group">
+        <label>EMIS Code</label>
+        <input type="text" id="emisInput" placeholder="e.g. 32230183" maxlength="12"/>
+      </div>
+      <button class="btn-primary" id="btnSearch" onclick="doSearch()">Search</button>
+      <button class="btn-secondary" id="btnClear" onclick="clearResults()">Clear</button>
+    </div>
+    <div class="progress-wrap" id="progressWrap">
+      <div class="progress-text" id="progressText">Fetching school data...</div>
+      <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill"></div></div>
+    </div>
+    <div class="error-msg" id="errorMsg"></div>
+  </div>
+
+  <!-- SCHOOL BANNER -->
+  <div class="school-banner" id="schoolBanner">
+    <div class="school-banner-icon">🏫</div>
+    <div>
+      <div class="school-banner-name" id="bannerName">—</div>
+      <div class="school-banner-meta" id="bannerMeta">—</div>
+    </div>
+    <div class="school-banner-emis" id="bannerEmis">—</div>
+  </div>
+
+  <!-- INFO CARDS -->
+  <div class="info-grid" id="infoGrid">
+    <div class="info-card">
+      <div class="info-card-label">District ID</div>
+      <div class="info-card-value" id="cDistrict">—</div>
+    </div>
+    <div class="info-card">
+      <div class="info-card-label">Tehsil ID</div>
+      <div class="info-card-value" id="cTehsil">—</div>
+    </div>
+    <div class="info-card">
+      <div class="info-card-label">Markaz ID</div>
+      <div class="info-card-value" id="cMarkaz">—</div>
+    </div>
+    <div class="info-card">
+      <div class="info-card-label">School ID</div>
+      <div class="info-card-value" id="cSchoolId">—</div>
+    </div>
+    <div class="info-card">
+      <div class="info-card-label">Total Students</div>
+      <div class="info-card-value green" id="cTotal">—</div>
+      <div class="info-card-sub" id="cTotalSub">—</div>
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-section" id="tableSection">
+    <div class="table-header">
+      <span class="table-title">📊 CLASS-WISE ENROLLMENT</span>
+      <span class="table-badge" id="tableBadge">0 classes</span>
+    </div>
+    <div class="gender-summary" id="genderSummary"></div>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Class</th>
+            <th class="right">Male</th>
+            <th class="right">Female</th>
+            <th class="right">Total</th>
+            <th class="right">Share</th>
+          </tr>
+        </thead>
+        <tbody id="enrollTbody"></tbody>
+      </table>
+    </div>
+    <div class="raw-toggle" onclick="toggleRaw()">
+      <span id="rawLabel">▶ Show raw JSON</span>
+    </div>
+    <pre class="raw-pre" id="rawPre"></pre>
+  </div>
+
+  <!-- EMPTY STATE -->
+  <div class="empty-state" id="emptyState">
+    <div class="icon">🏫</div>
+    <div>Enter an EMIS code above and click <strong>Search</strong><br>to view class-wise enrollment data</div>
+  </div>
+
+  <!-- HISTORY -->
+  <div class="history-panel" id="historyPanel" style="display:none">
+    <div class="history-label">Recent searches</div>
+    <div class="history-list" id="historyList"></div>
+  </div>
+
+</main>
+
+<script>
+const PROXIES = [
+  "https://corsproxy.io/?url=",
+  "https://api.allorigins.win/raw?url=",
+  "https://thingproxy.freeboard.io/fetch/"
+];
+
+const BASE = "https://sis.pesrp.edu.pk";
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+// School name lookup from Google Sheet CSV (same sheet as attendance dashboard)
+const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQFGaSeUAf7BVkqHbcQg91XXeZbrVi8rATTJ-jxmOC1taoFXYvFa5J-LL6-Q1KR-Pz5AMS7tG8Skn2h/pub?gid=2066596328&single=true&output=csv";
+
+let schoolDb = {}; // emis -> row
+let searchHistory = JSON.parse(localStorage.getItem('emis_history') || '[]');
+
+// ── CSV load ─────────────────────────────────────────────────
+(async function loadCSV() {
+  try {
+    const resp = await fetch(CSV_URL);
+    const text = await resp.text();
+    const rows = parseCSV(text);
+    rows.forEach(r => { if (r['EMIS']) schoolDb[r['EMIS'].trim()] = r; });
+    document.getElementById('headerBadge').textContent = `${rows.length} schools loaded`;
+  } catch(e) {
+    document.getElementById('headerBadge').textContent = 'CSV unavailable';
+  }
+})();
+
+function parseCSV(text) {
+  const lines = text.trim().split('\n');
+  const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+  return lines.slice(1).map(line => {
+    const vals = []; let cur = '', inQ = false;
+    for (let i = 0; i < line.length; i++) {
+      const c = line[i];
+      if (c === '"') { inQ = !inQ; }
+      else if (c === ',' && !inQ) { vals.push(cur.trim()); cur = ''; }
+      else { cur += c; }
+    }
+    vals.push(cur.trim());
+    const row = {};
+    headers.forEach((h, i) => row[h] = (vals[i] || '').replace(/^"|"$/g, '').trim());
+    return row;
+  }).filter(r => r['EMIS']);
+}
+
+// ── CORS Proxy fetch ─────────────────────────────────────────
+async function proxyFetch(url) {
+  for (let attempt = 0; attempt < PROXIES.length * 2; attempt++) {
+    const proxy = PROXIES[attempt % PROXIES.length];
+    try {
+      const resp = await fetch(proxy + encodeURIComponent(url));
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      return await resp.json();
+    } catch(e) {
+      if (attempt < PROXIES.length * 2 - 1) await sleep(250 * (attempt + 1));
+    }
+  }
+  throw new Error('All proxies failed. Please try again later.');
+}
+
+// ── Search ───────────────────────────────────────────────────
+async function doSearch() {
+  const code = document.getElementById('emisInput').value.trim();
+  if (!code) { showError('Please enter an EMIS code.'); return; }
+
+  clearResults(false);
+  setProgress(true, 'Fetching school IDs...');
+  setSearching(true);
+
+  try {
+    // Step 1: Get district/tehsil/markaz/school IDs
+    animateProgress(0, 40, 800);
+    const meta = await proxyFetch(`${BASE}/dashboard/get_dtms_by_emis_code?s_id_emis_code=${encodeURIComponent(code)}`);
+    if (!meta || !meta.s_id) throw new Error(`No school found for EMIS code "${code}".`);
+
+    const { s_district_idFk: dist, s_tehsil_idFk: teh, s_markaz_idFk: mar, s_id: sid } = meta;
+
+    // Step 2: Get enrollment data
+    setProgressText('Fetching enrollment data...');
+    animateProgress(40, 90, 600);
+    const enroll = await proxyFetch(`${BASE}/dashboard_revamp/get_gender_bar_area?district=${dist}&tehsil=${teh}&markaz=${mar}&school=${sid}&classes=&s_id_emis_code=`);
+    if (!enroll || !enroll.categories) throw new Error('Could not fetch enrollment data.');
+
+    animateProgress(90, 100, 300);
+    await sleep(350);
+    setProgress(false);
+
+    renderResults(code, meta, enroll);
+    saveHistory(code);
+
+  } catch(e) {
+    setProgress(false);
+    showError(e.message || 'Something went wrong. Please try again.');
+  }
+
+  setSearching(false);
+}
+
+// ── Render ───────────────────────────────────────────────────
+function renderResults(code, meta, enroll) {
+  const { s_district_idFk: dist, s_tehsil_idFk: teh, s_markaz_idFk: mar, s_id: sid } = meta;
+  const { categories, male, female } = enroll;
+
+  // School info from CSV if available
+  const schoolRow = schoolDb[code] || {};
+  const schoolName = schoolRow['School Name'] || null;
+  const level = schoolRow['Level'] || null;
+  const gender = schoolRow['Gender'] || null;
+  const tehsilName = schoolRow['Tehsil'] || null;
+  const district = schoolRow['District'] || null;
+
+  // Show banner
+  const banner = document.getElementById('schoolBanner');
+  document.getElementById('bannerName').textContent = schoolName || `School #${sid}`;
+  const metaParts = [district, tehsilName, level, gender].filter(Boolean);
+  document.getElementById('bannerMeta').textContent = metaParts.join(' · ') || 'School details';
+  document.getElementById('bannerEmis').textContent = `EMIS: ${code}`;
+  banner.classList.add('visible');
+
+  // Info cards
+  document.getElementById('cDistrict').textContent = dist;
+  document.getElementById('cTehsil').textContent = teh;
+  document.getElementById('cMarkaz').textContent = mar;
+  document.getElementById('cSchoolId').textContent = sid;
+
+  const totM = male.reduce((a, b) => a + b, 0);
+  const totF = female.reduce((a, b) => a + b, 0);
+  const totAll = totM + totF;
+  document.getElementById('cTotal').textContent = totAll.toLocaleString();
+  document.getElementById('cTotalSub').textContent = `♂ ${totM}  ♀ ${totF}`;
+  document.getElementById('infoGrid').classList.add('visible');
+
+  // Gender summary legend
+  document.getElementById('genderSummary').innerHTML = `
+    <div class="gender-chip"><div class="gender-dot" style="background:#58a6ff"></div>Male — ${totM} students</div>
+    <div class="gender-chip"><div class="gender-dot" style="background:#d2a8ff"></div>Female — ${totF} students</div>
+    <div class="gender-chip"><div class="gender-dot" style="background:#3fb950"></div>Total — ${totAll} students</div>
+  `;
+
+  // Active classes only
+  const active = categories.map((c, i) => ({ c, m: male[i], f: female[i], t: male[i] + female[i] })).filter(x => x.t > 0);
+  const maxT = Math.max(...active.map(x => x.t), 1);
+
+  let rows = '';
+  for (const { c, m, f, t } of active) {
+    const pct = Math.round((t / totAll) * 100);
+    const bm = Math.max(Math.round((m / maxT) * 56), m > 0 ? 3 : 0);
+    const bf = Math.max(Math.round((f / maxT) * 56), f > 0 ? 3 : 0);
+    rows += `<tr>
+      <td class="class-name">Class ${c}</td>
+      <td class="num male"><div class="bar-wrap"><div class="bar bar-m" style="width:${bm}px"></div>${m}</div></td>
+      <td class="num female"><div class="bar-wrap"><div class="bar bar-f" style="width:${bf}px"></div>${f}</div></td>
+      <td class="num total-col">${t}</td>
+      <td class="num"><span style="font-family:var(--mono);font-size:11px;color:var(--muted)">${pct}%</span></td>
+    </tr>`;
+  }
+  // Total row
+  rows += `<tr class="total-row">
+    <td class="bold">Total</td>
+    <td class="num male bold">${totM}</td>
+    <td class="num female bold">${totF}</td>
+    <td class="num total-col bold">${totAll}</td>
+    <td class="num" style="color:var(--muted);font-family:var(--mono);font-size:11px">100%</td>
+  </tr>`;
+
+  document.getElementById('enrollTbody').innerHTML = rows;
+  document.getElementById('tableBadge').textContent = `${active.length} active class${active.length !== 1 ? 'es' : ''}`;
+
+  // Raw JSON
+  document.getElementById('rawPre').textContent = JSON.stringify({ meta, enroll }, null, 2);
+
+  document.getElementById('tableSection').classList.add('visible');
+  document.getElementById('emptyState').style.display = 'none';
+}
+
+// ── Helpers ──────────────────────────────────────────────────
+function clearResults(resetInput = true) {
+  if (resetInput) document.getElementById('emisInput').value = '';
+  document.getElementById('schoolBanner').classList.remove('visible');
+  document.getElementById('infoGrid').classList.remove('visible');
+  document.getElementById('tableSection').classList.remove('visible');
+  document.getElementById('emptyState').style.display = 'block';
+  document.getElementById('errorMsg').classList.remove('visible');
+  document.getElementById('rawPre').style.display = 'none';
+  document.getElementById('rawLabel').textContent = '▶ Show raw JSON';
+  setProgress(false);
+}
+
+function showError(msg) {
+  const el = document.getElementById('errorMsg');
+  el.textContent = '⚠ ' + msg;
+  el.classList.add('visible');
+}
+
+function setSearching(on) {
+  document.getElementById('btnSearch').disabled = on;
+  document.getElementById('btnSearch').textContent = on ? 'Searching...' : 'Search';
+}
+
+function setProgress(on, msg = '') {
+  document.getElementById('progressWrap').classList.toggle('visible', on);
+  if (msg) document.getElementById('progressText').textContent = msg;
+  if (!on) document.getElementById('progressFill').style.width = '0%';
+}
+
+function setProgressText(msg) {
+  document.getElementById('progressText').textContent = msg;
+}
+
+let progressTimer = null;
+function animateProgress(from, to, duration) {
+  clearInterval(progressTimer);
+  const steps = 30;
+  const interval = duration / steps;
+  const increment = (to - from) / steps;
+  let current = from;
+  document.getElementById('progressFill').style.width = from + '%';
+  progressTimer = setInterval(() => {
+    current += increment;
+    if (current >= to) { clearInterval(progressTimer); current = to; }
+    document.getElementById('progressFill').style.width = Math.round(current) + '%';
+  }, interval);
+}
+
+function toggleRaw() {
+  const pre = document.getElementById('rawPre');
+  const lbl = document.getElementById('rawLabel');
+  const open = pre.style.display === 'none';
+  pre.style.display = open ? 'block' : 'none';
+  lbl.textContent = open ? '▼ Hide raw JSON' : '▶ Show raw JSON';
+}
+
+// ── History ──────────────────────────────────────────────────
+function saveHistory(code) {
+  searchHistory = [code, ...searchHistory.filter(c => c !== code)].slice(0, 8);
+  localStorage.setItem('emis_history', JSON.stringify(searchHistory));
+  renderHistory();
+}
+
+function renderHistory() {
+  if (!searchHistory.length) { document.getElementById('historyPanel').style.display = 'none'; return; }
+  document.getElementById('historyPanel').style.display = 'block';
+  document.getElementById('historyList').innerHTML = searchHistory.map(code => {
+    const name = schoolDb[code] ? schoolDb[code]['School Name'] : code;
+    return `<div class="history-chip" onclick="loadHistory('${code}')" title="${name}">${code}</div>`;
+  }).join('');
+}
+
+function loadHistory(code) {
+  document.getElementById('emisInput').value = code;
+  doSearch();
+}
+
+// ── Keyboard ─────────────────────────────────────────────────
+document.getElementById('emisInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doSearch();
+});
+
+// Init history
+renderHistory();
+</script>
+</body>
+</html>
