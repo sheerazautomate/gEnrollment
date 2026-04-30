@@ -277,7 +277,32 @@
     <div class="school-banner-emis" id="bannerEmis">—</div>
   </div>
 
- 
+  <!-- INFO CARDS -->
+  <div class="info-grid" id="infoGrid">
+    <div class="info-card">
+      <div class="info-card-label">📍 District</div>
+      <div class="info-card-value" id="cDistrict" style="font-size:14px;font-family:var(--sans)">—</div>
+    </div>
+    <div class="info-card">
+      <div class="info-card-label">🏘 Tehsil</div>
+      <div class="info-card-value" id="cTehsil" style="font-size:14px;font-family:var(--sans)">—</div>
+    </div>
+    <div class="info-card">
+      <div class="info-card-label">🗺 Markaz</div>
+      <div class="info-card-value" id="cMarkaz" style="font-size:14px;font-family:var(--sans)">—</div>
+    </div>
+    <div class="info-card">
+      <div class="info-card-label">🏫 Level</div>
+      <div class="info-card-value" id="cLevel" style="font-size:14px;font-family:var(--sans)">—</div>
+      <div class="info-card-sub" id="cGender">—</div>
+    </div>
+    <div class="info-card">
+      <div class="info-card-label">👨‍🎓 Total Students</div>
+      <div class="info-card-value green" id="cTotal">—</div>
+      <div class="info-card-sub" id="cTotalSub">—</div>
+    </div>
+  </div>
+
   <!-- TABLE -->
   <div class="table-section" id="tableSection">
     <div class="table-header">
@@ -440,11 +465,12 @@ function renderResults(code, meta, enroll) {
   document.getElementById('bannerEmis').textContent = `EMIS: ${code}`;
   banner.classList.add('visible');
 
-  // Info cards
-  document.getElementById('cDistrict').textContent = dist;
-  document.getElementById('cTehsil').textContent = teh;
-  document.getElementById('cMarkaz').textContent = mar;
-  document.getElementById('cSchoolId').textContent = sid;
+  // Info cards — use human-readable names from CSV, fall back gracefully
+  document.getElementById('cDistrict').textContent = district || '—';
+  document.getElementById('cTehsil').textContent = tehsilName || '—';
+  document.getElementById('cMarkaz').textContent = schoolRow['Markaz'] || '—';
+  document.getElementById('cLevel').textContent = level || '—';
+  document.getElementById('cGender').textContent = gender ? `${gender} School` : '—';
 
   const totM = male.reduce((a, b) => a + b, 0);
   const totF = female.reduce((a, b) => a + b, 0);
