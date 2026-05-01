@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>PESRP Enrollment Lookup</title>
+<title>PESRP Markaz Enrollment Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
   :root {
@@ -21,218 +21,211 @@
     --mono: 'IBM Plex Mono', monospace;
     --sans: 'IBM Plex Sans', sans-serif;
   }
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; font-size: 14px; }
 
   /* HEADER */
   header {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 16px 24px;
-    display: flex; align-items: center; gap: 16px;
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    padding: 16px 24px; display: flex; align-items: center; gap: 16px;
     position: sticky; top: 0; z-index: 100;
   }
   .logo-mark {
-    width: 36px; height: 36px;
-    background: var(--accent2);
-    border-radius: 6px;
+    width: 36px; height: 36px; background: var(--accent2); border-radius: 6px;
     display: flex; align-items: center; justify-content: center;
-    font-family: var(--mono); font-weight: 600; font-size: 13px; color: #0d1117;
-    flex-shrink: 0;
+    font-family: var(--mono); font-weight: 600; font-size: 13px; color: #0d1117; flex-shrink: 0;
   }
   .header-title { font-size: 15px; font-weight: 600; letter-spacing: 0.01em; }
   .header-sub { font-size: 12px; color: var(--muted); font-family: var(--mono); }
-  .header-badge {
-    margin-left: auto;
-    font-family: var(--mono); font-size: 11px; color: var(--accent2);
+  .header-date {
+    margin-left: auto; font-family: var(--mono); font-size: 12px; color: var(--accent2);
     background: rgba(63,185,80,0.1); padding: 4px 10px; border-radius: 4px;
     border: 1px solid rgba(63,185,80,0.2);
   }
 
   /* MAIN */
-  main { max-width: 960px; margin: 0 auto; padding: 28px 24px; }
+  main { max-width: 1400px; margin: 0 auto; padding: 24px; }
 
-  /* SEARCH PANEL */
-  .search-panel {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 22px;
-    margin-bottom: 24px;
+  /* FILTER PANEL */
+  .filter-panel {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 20px; margin-bottom: 24px;
   }
-  .panel-label {
+  .filter-label {
     font-size: 11px; font-family: var(--mono); color: var(--muted);
-    text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 14px;
+    text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px;
   }
-  .search-row { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
-  .search-group { display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 200px; }
-  .search-group label { font-size: 11px; color: var(--muted); font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.06em; }
+  .filter-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; }
+  .filter-group { display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 160px; }
+  .filter-group label {
+    font-size: 11px; color: var(--muted); font-family: var(--mono);
+    text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  select {
+    background: var(--surface2); border: 1px solid var(--border); color: var(--text);
+    padding: 8px 12px; border-radius: 6px; font-family: var(--sans); font-size: 13px;
+    cursor: pointer; appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237d8590' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px;
+    transition: border-color 0.15s;
+  }
+  select:focus { outline: none; border-color: var(--accent2); }
+  select:disabled { opacity: 0.4; cursor: not-allowed; }
 
-  input[type="text"], input[type="number"] {
-    background: var(--surface2); border: 1px solid var(--border);
-    color: var(--text); padding: 9px 14px; border-radius: 6px;
-    font-family: var(--mono); font-size: 14px; letter-spacing: 0.05em;
-    transition: border-color 0.15s; width: 100%;
+  .btn-fetch {
+    background: var(--accent2); color: #0d1117; border: none; padding: 9px 22px;
+    border-radius: 6px; font-family: var(--mono); font-weight: 600; font-size: 13px;
+    cursor: pointer; transition: opacity 0.15s, transform 0.1s; white-space: nowrap; align-self: flex-end;
   }
-  input:focus { outline: none; border-color: var(--accent); }
-  input::placeholder { color: var(--muted); }
+  .btn-fetch:hover { opacity: 0.85; }
+  .btn-fetch:active { transform: scale(0.97); }
+  .btn-fetch:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
 
-  .btn-primary {
-    background: var(--accent2); color: #0d1117;
-    border: none; padding: 9px 24px; border-radius: 6px;
-    font-family: var(--mono); font-weight: 600; font-size: 13px;
-    cursor: pointer; transition: opacity 0.15s, transform 0.1s;
-    white-space: nowrap; align-self: flex-end; height: 38px;
+  .btn-export {
+    background: transparent; color: var(--accent); border: 1px solid rgba(88,166,255,0.35);
+    padding: 9px 18px; border-radius: 6px; font-family: var(--mono); font-weight: 600; font-size: 12px;
+    cursor: pointer; transition: all 0.15s; white-space: nowrap; align-self: flex-end; display: none;
   }
-  .btn-primary:hover { opacity: 0.85; }
-  .btn-primary:active { transform: scale(0.97); }
-  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
-
-  .btn-secondary {
-    background: transparent; color: var(--muted);
-    border: 1px solid var(--border); padding: 9px 18px; border-radius: 6px;
-    font-family: var(--mono); font-size: 12px;
-    cursor: pointer; transition: color 0.15s, border-color 0.15s;
-    white-space: nowrap; align-self: flex-end; height: 38px;
-  }
-  .btn-secondary:hover { color: var(--text); border-color: var(--muted); }
+  .btn-export:hover { background: rgba(88,166,255,0.1); border-color: var(--accent); }
+  .btn-export:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-export.visible { display: inline-flex; align-items: center; gap: 6px; }
 
   /* PROGRESS */
-  .progress-wrap { margin-top: 16px; display: none; }
+  .progress-wrap { margin-top: 14px; display: none; }
   .progress-wrap.visible { display: block; }
-  .progress-text { font-family: var(--mono); font-size: 12px; color: var(--accent); margin-bottom: 6px; }
+  .progress-text { font-family: var(--mono); font-size: 12px; color: var(--accent2); margin-bottom: 6px; }
   .progress-bar-bg { background: var(--surface2); border-radius: 4px; height: 4px; overflow: hidden; border: 1px solid var(--border); }
-  .progress-bar-fill { height: 100%; background: var(--accent2); border-radius: 4px; transition: width 0.3s ease; width: 0%; }
+  .progress-bar-fill { height: 100%; background: var(--accent2); border-radius: 4px; transition: width 0.2s ease; width: 0%; }
 
-  /* ERROR */
-  .error-msg { display: none; margin-top: 12px; padding: 10px 14px; border-radius: 6px; background: rgba(248,81,73,0.1); border: 1px solid rgba(248,81,73,0.25); color: var(--danger); font-family: var(--mono); font-size: 12px; }
-  .error-msg.visible { display: block; }
+  /* SUMMARY CARDS */
+  .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; display: none; }
+  .card.visible { display: block; }
+  .card-icon { font-size: 18px; margin-bottom: 8px; }
+  .card-label { font-size: 11px; color: var(--muted); font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+  .card-value { font-size: 26px; font-family: var(--mono); font-weight: 600; line-height: 1; }
+  .card-value.green { color: var(--accent2); }
+  .card-value.blue { color: var(--accent); }
+  .card-value.pink { color: var(--pink); }
+  .card-sub { font-size: 11px; color: var(--muted); margin-top: 4px; font-family: var(--mono); }
 
-  /* SCHOOL INFO CARDS */
-  .info-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 10px; margin-bottom: 20px; display: none;
-  }
-  .info-grid.visible { display: grid; }
-  .info-card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 8px; padding: 14px 16px;
-  }
-  .info-card-label { font-size: 10px; font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin-bottom: 6px; }
-  .info-card-value { font-size: 18px; font-family: var(--mono); font-weight: 600; color: var(--accent); }
-  .info-card-value.green { color: var(--accent2); }
-  .info-card-sub { font-size: 11px; color: var(--muted); font-family: var(--mono); margin-top: 3px; }
+  /* STATE MSGS */
+  .state-msg { text-align: center; padding: 60px 20px; color: var(--muted); font-family: var(--mono); font-size: 13px; display: none; }
+  .state-msg.visible { display: block; }
+  .state-msg .icon { font-size: 36px; margin-bottom: 12px; }
 
-  /* SCHOOL NAME BANNER */
-  .school-banner {
-    display: none; background: var(--surface); border: 1px solid var(--border);
-    border-radius: 10px; padding: 16px 20px; margin-bottom: 16px;
-    align-items: center; gap: 14px;
-  }
-  .school-banner.visible { display: flex; }
-  .school-banner-icon {
-    width: 40px; height: 40px; background: rgba(88,166,255,0.12);
-    border-radius: 8px; display: flex; align-items: center; justify-content: center;
-    font-size: 18px; flex-shrink: 0;
-  }
-  .school-banner-name { font-size: 15px; font-weight: 600; margin-bottom: 3px; }
-  .school-banner-meta { font-size: 12px; color: var(--muted); font-family: var(--mono); }
-  .school-banner-emis {
-    margin-left: auto; font-family: var(--mono); font-size: 12px;
-    color: var(--accent); background: rgba(88,166,255,0.1);
-    padding: 4px 10px; border-radius: 4px; border: 1px solid rgba(88,166,255,0.2);
-    flex-shrink: 0;
-  }
+  /* TABLES WRAP */
+  .tables-wrap { display: none; }
+  .tables-wrap.visible { display: block; }
 
-  /* ENROLLMENT TABLE */
-  .table-section { display: none; }
-  .table-section.visible { display: block; }
-  .table-header {
-    display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
-  }
+  /* TABLE SECTION */
+  .table-section { margin-bottom: 28px; }
+  .table-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
   .table-title { font-size: 13px; font-weight: 600; font-family: var(--mono); letter-spacing: 0.04em; }
   .table-badge {
-    font-size: 11px; font-family: var(--mono); padding: 2px 9px;
-    border-radius: 10px; background: rgba(63,185,80,0.1);
-    color: var(--accent2); border: 1px solid rgba(63,185,80,0.2);
+    font-size: 11px; font-family: var(--mono); padding: 2px 8px; border-radius: 10px;
+    background: rgba(63,185,80,0.12); color: var(--accent2); border: 1px solid rgba(63,185,80,0.2);
   }
+  .table-sort-hint { margin-left: auto; font-size: 11px; color: var(--muted); font-family: var(--mono); }
   .table-scroll { overflow-x: auto; border-radius: 10px; border: 1px solid var(--border); }
   table { width: 100%; border-collapse: collapse; }
   thead { background: var(--surface2); }
   th {
-    padding: 10px 16px; text-align: left;
-    font-size: 11px; font-family: var(--mono); font-weight: 600;
-    text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted);
-    white-space: nowrap; border-bottom: 1px solid var(--border);
+    padding: 10px 14px; text-align: left; font-size: 11px; font-family: var(--mono);
+    font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted);
+    white-space: nowrap; cursor: pointer; user-select: none; border-bottom: 1px solid var(--border);
   }
+  th:hover { color: var(--text); }
   th.right { text-align: right; }
+  th.sorted .sort-arrow { opacity: 1 !important; color: var(--accent2); }
+  th .sort-arrow { margin-left: 4px; opacity: 0.4; }
   tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
   tbody tr:last-child { border-bottom: none; }
   tbody tr:hover { background: rgba(255,255,255,0.03); }
   tbody tr.total-row { background: var(--surface2); }
   tbody tr.total-row:hover { background: var(--surface2); }
-  td { padding: 10px 16px; font-size: 13px; }
+  td { padding: 10px 14px; font-size: 13px; white-space: nowrap; }
+  td.school-name { white-space: normal; max-width: 240px; font-weight: 500; }
   td.num { font-family: var(--mono); text-align: right; }
   td.male { color: var(--accent); }
   td.female { color: var(--pink); }
   td.total-col { color: var(--accent2); font-weight: 600; }
-  td.class-name { font-family: var(--mono); font-weight: 600; font-size: 13px; }
-  td.bold { font-family: var(--mono); font-weight: 600; }
+  td.level-tag { font-family: var(--mono); font-size: 11px; color: var(--muted); }
 
-  /* BAR VISUAL */
-  .bar-wrap { display: flex; align-items: center; gap: 6px; justify-content: flex-end; }
-  .bar { height: 10px; border-radius: 2px; min-width: 2px; display: inline-block; }
+  /* STATUS PILL */
+  .status-pill {
+    display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 20px;
+    font-size: 11px; font-family: var(--mono); font-weight: 600; letter-spacing: 0.04em;
+  }
+  .status-ok { background: rgba(63,185,80,0.12); color: var(--accent2); border: 1px solid rgba(63,185,80,0.25); }
+  .status-err { background: rgba(248,81,73,0.1); color: var(--danger); border: 1px solid rgba(248,81,73,0.2); cursor: pointer; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+  /* BAR */
+  .bar-wrap { display: flex; align-items: center; gap: 5px; justify-content: flex-end; }
+  .bar { height: 8px; border-radius: 2px; min-width: 2px; display: inline-block; }
   .bar-m { background: var(--accent); }
   .bar-f { background: var(--pink); }
 
-  /* GENDER SUMMARY */
-  .gender-summary {
-    display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 14px;
+  /* MODAL */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+    z-index: 1000; align-items: center; justify-content: center; padding: 20px;
   }
-  .gender-chip {
-    display: flex; align-items: center; gap: 7px;
-    font-family: var(--mono); font-size: 12px; color: var(--muted);
+  .modal-overlay.open { display: flex; }
+  .modal-box {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    width: 100%; max-width: 720px; max-height: 90vh; display: flex; flex-direction: column;
+    overflow: hidden; animation: modalIn 0.18s ease;
   }
-  .gender-dot { width: 10px; height: 10px; border-radius: 50%; }
+  @keyframes modalIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .modal-header {
+    display: flex; align-items: flex-start; gap: 12px; padding: 16px 20px;
+    border-bottom: 1px solid var(--border); flex-shrink: 0;
+  }
+  .modal-title { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+  .modal-emis { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+  .modal-close {
+    margin-left: auto; background: none; border: 1px solid var(--border); color: var(--muted);
+    border-radius: 6px; cursor: pointer; font-size: 16px; width: 30px; height: 30px;
+    display: flex; align-items: center; justify-content: center; transition: color 0.15s, border-color 0.15s;
+  }
+  .modal-close:hover { color: var(--text); border-color: var(--text); }
+  .modal-body { flex: 1; overflow-y: auto; padding: 20px; min-height: 300px; position: relative; }
+  .modal-spinner {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 12px;
+    color: var(--muted); font-family: var(--mono); font-size: 12px;
+  }
+  .spinner-ring {
+    width: 32px; height: 32px; border: 2px solid var(--border);
+    border-top-color: var(--accent2); border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .modal-stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 16px; }
+  .modal-stat-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; }
+  .modal-stat-label { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin-bottom: 6px; }
+  .modal-stat-value { font-family: var(--mono); font-size: 28px; font-weight: 600; line-height: 1; }
+  .modal-stat-value.green { color: var(--accent2); }
+  .modal-stat-value.blue { color: var(--accent); }
+  .modal-stat-value.pink { color: var(--pink); }
+  .modal-table-wrap { overflow-x: auto; border-radius: 8px; border: 1px solid var(--border); }
+  .modal-footer { padding: 12px 20px; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .modal-url { font-family: var(--mono); font-size: 10px; color: var(--muted); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .modal-open-btn {
+    font-family: var(--mono); font-size: 11px; padding: 5px 12px; border-radius: 5px;
+    border: 1px solid var(--border); background: var(--surface2); color: var(--text);
+    cursor: pointer; white-space: nowrap; transition: border-color 0.15s; text-decoration: none; display: inline-block;
+  }
+  .modal-open-btn:hover { border-color: var(--accent2); color: var(--accent2); }
 
-  /* EMPTY STATE */
-  .empty-state {
-    text-align: center; padding: 70px 20px;
-    color: var(--muted); font-family: var(--mono); font-size: 13px;
-  }
-  .empty-state .icon { font-size: 40px; margin-bottom: 14px; }
-
-  /* HISTORY */
-  .history-panel { margin-top: 28px; }
-  .history-label { font-size: 11px; font-family: var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
-  .history-list { display: flex; flex-wrap: wrap; gap: 8px; }
-  .history-chip {
-    font-family: var(--mono); font-size: 12px;
-    padding: 4px 12px; border-radius: 20px;
-    background: var(--surface); border: 1px solid var(--border); color: var(--muted);
-    cursor: pointer; transition: color 0.15s, border-color 0.15s;
-  }
-  .history-chip:hover { color: var(--accent2); border-color: var(--accent2); }
-
-  /* RAW JSON TOGGLE */
-  .raw-toggle {
-    font-family: var(--mono); font-size: 11px; color: var(--muted);
-    cursor: pointer; display: inline-flex; align-items: center; gap: 5px;
-    padding: 4px 0; user-select: none; transition: color 0.15s; margin-top: 14px;
-  }
-  .raw-toggle:hover { color: var(--text); }
-  .raw-pre {
-    background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 6px; padding: 12px; font-family: var(--mono);
-    font-size: 11px; color: var(--accent); overflow-x: auto;
-    margin-top: 8px; white-space: pre-wrap; word-break: break-all; display: none;
-  }
-
-  @media (max-width: 600px) {
-    main { padding: 14px; }
-    .search-row { flex-direction: column; }
-    .search-group { min-width: 100%; }
-    .btn-primary, .btn-secondary { width: 100%; }
+  @media (max-width: 640px) {
+    main { padding: 12px; }
+    .filter-row { flex-direction: column; }
+    .filter-group { min-width: 100%; }
+    .btn-fetch, .btn-export { width: 100%; }
   }
 </style>
 </head>
@@ -241,148 +234,188 @@
 <header>
   <div class="logo-mark">EN</div>
   <div>
-    <div class="header-title">PESRP Enrollment Lookup</div>
-    <div class="header-sub">Class-wise Gender Enrollment by EMIS Code</div>
+    <div class="header-title">PESRP Enrollment Dashboard</div>
+    <div class="header-sub">Markaz-wise Class & Gender Enrollment</div>
   </div>
-  <div class="header-badge" id="headerBadge">Ready</div>
+  <div class="header-date" id="headerDate">—</div>
 </header>
 
 <main>
 
-  <!-- SEARCH -->
-  <div class="search-panel">
-    <div class="panel-label">🔍 Search School by EMIS Code</div>
-    <div class="search-row">
-      <div class="search-group">
-        <label>EMIS Code</label>
-        <input type="text" id="emisInput" placeholder="e.g. 32230183" maxlength="12"/>
+  <!-- FILTERS -->
+  <div class="filter-panel">
+    <div class="filter-label">📍 Select Location</div>
+    <div class="filter-row">
+      <div class="filter-group">
+        <label>District</label>
+        <select id="selDistrict" disabled><option value="">— Loading —</option></select>
       </div>
-      <button class="btn-primary" id="btnSearch" onclick="doSearch()">Search</button>
-      <button class="btn-secondary" id="btnClear" onclick="clearResults()">Clear</button>
+      <div class="filter-group">
+        <label>Wing</label>
+        <select id="selWing" disabled><option value="">— Select District —</option></select>
+      </div>
+      <div class="filter-group">
+        <label>Tehsil</label>
+        <select id="selTehsil" disabled><option value="">— Select Wing —</option></select>
+      </div>
+      <div class="filter-group">
+        <label>Markaz</label>
+        <select id="selMarkaz" disabled><option value="">— Select Tehsil —</option></select>
+      </div>
+      <button class="btn-fetch" id="btnFetch" disabled>Fetch Enrollment</button>
+      <button class="btn-export visible" id="btnExport" style="display:none" onclick="exportCSV()">⬇ Export CSV</button>
     </div>
     <div class="progress-wrap" id="progressWrap">
-      <div class="progress-text" id="progressText">Fetching school data...</div>
+      <div class="progress-text" id="progressText">Fetching...</div>
       <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill"></div></div>
     </div>
-    <div class="error-msg" id="errorMsg"></div>
   </div>
 
-  <!-- SCHOOL BANNER -->
-  <div class="school-banner" id="schoolBanner">
-    <div class="school-banner-icon">🏫</div>
-    <div>
-      <div class="school-banner-name" id="bannerName">—</div>
-      <div class="school-banner-meta" id="bannerMeta">—</div>
+  <!-- SUMMARY CARDS -->
+  <div class="cards-grid" id="cardsGrid">
+    <div class="card" id="cardSchools">
+      <div class="card-icon">🏫</div>
+      <div class="card-label">Total Schools</div>
+      <div class="card-value blue" id="cSchools">—</div>
     </div>
-    <div class="school-banner-emis" id="bannerEmis">—</div>
-  </div>
-
-  <!-- INFO CARDS -->
-  <div class="info-grid" id="infoGrid">
-    <div class="info-card">
-      <div class="info-card-label">📍 District</div>
-      <div class="info-card-value" id="cDistrict" style="font-size:14px;font-family:var(--sans)">—</div>
+    <div class="card" id="cardTotal">
+      <div class="card-icon">🎓</div>
+      <div class="card-label">Total Students</div>
+      <div class="card-value green" id="cTotal">—</div>
     </div>
-    <div class="info-card">
-      <div class="info-card-label">🏘 Tehsil</div>
-      <div class="info-card-value" id="cTehsil" style="font-size:14px;font-family:var(--sans)">—</div>
+    <div class="card" id="cardMale">
+      <div class="card-icon">♂</div>
+      <div class="card-label">Male Students</div>
+      <div class="card-value blue" id="cMale">—</div>
+      <div class="card-sub" id="cMalePct">—</div>
     </div>
-    <div class="info-card">
-      <div class="info-card-label">🗺 Markaz</div>
-      <div class="info-card-value" id="cMarkaz" style="font-size:14px;font-family:var(--sans)">—</div>
+    <div class="card" id="cardFemale">
+      <div class="card-icon">♀</div>
+      <div class="card-label">Female Students</div>
+      <div class="card-value pink" id="cFemale">—</div>
+      <div class="card-sub" id="cFemalePct">—</div>
     </div>
-    <div class="info-card">
-      <div class="info-card-label">🏫 Level</div>
-      <div class="info-card-value" id="cLevel" style="font-size:14px;font-family:var(--sans)">—</div>
-      <div class="info-card-sub" id="cGender">—</div>
+    <div class="card" id="cardErrors">
+      <div class="card-icon">⚠️</div>
+      <div class="card-label">Failed Fetches</div>
+      <div class="card-value" id="cErrors" style="color:var(--warn)">—</div>
+      <div class="card-sub">Click ↗ to retry</div>
     </div>
-    <div class="info-card">
-      <div class="info-card-label">👨‍🎓 Total Students</div>
-      <div class="info-card-value green" id="cTotal">—</div>
-      <div class="info-card-sub" id="cTotalSub">—</div>
-    </div>
-  </div>
-
-  <!-- TABLE -->
-  <div class="table-section" id="tableSection">
-    <div class="table-header">
-      <span class="table-title">📊 CLASS-WISE ENROLLMENT</span>
-      <span class="table-badge" id="tableBadge">0 classes</span>
-    </div>
-    <div class="gender-summary" id="genderSummary"></div>
-    <div class="table-scroll">
-      <table>
-        <thead>
-          <tr>
-            <th>Class</th>
-            <th class="right">Male</th>
-            <th class="right">Female</th>
-            <th class="right">Total</th>
-            <th class="right">Share</th>
-          </tr>
-        </thead>
-        <tbody id="enrollTbody"></tbody>
-      </table>
-    </div>
-    <div class="raw-toggle" onclick="toggleRaw()">
-      <span id="rawLabel">▶ Show raw JSON</span>
-    </div>
-    <pre class="raw-pre" id="rawPre"></pre>
   </div>
 
   <!-- EMPTY STATE -->
-  <div class="empty-state" id="emptyState">
-    <div class="icon">🏫</div>
-    <div>Enter an EMIS code above and click <strong>Search</strong><br>to view class-wise enrollment data</div>
+  <div class="state-msg visible" id="emptyState">
+    <div class="icon">📊</div>
+    <div>Select a District, Wing, Tehsil and Markaz<br>then click <strong>Fetch Enrollment</strong></div>
   </div>
 
-  <!-- HISTORY -->
-  <div class="history-panel" id="historyPanel" style="display:none">
-    <div class="history-label">Recent searches</div>
-    <div class="history-list" id="historyList"></div>
+  <!-- ERROR STATE -->
+  <div class="state-msg" id="errorState">
+    <div class="icon">⚠️</div>
+    <div id="errorMsg">Something went wrong.</div>
+  </div>
+
+  <!-- TABLES -->
+  <div class="tables-wrap" id="tablesWrap">
+    <div class="table-section">
+      <div class="table-header">
+        <span class="table-title">📊 ENROLLMENT BY SCHOOL</span>
+        <span class="table-badge" id="tBadge">0 schools</span>
+        <span class="table-sort-hint">Click column header to sort</span>
+      </div>
+      <div class="table-scroll">
+        <table id="mainTable">
+          <thead>
+            <tr>
+              <th data-col="name">School Name <span class="sort-arrow">↕</span></th>
+              <th data-col="level">Level <span class="sort-arrow">↕</span></th>
+              <th data-col="gender">Gender <span class="sort-arrow">↕</span></th>
+              <th data-col="male" class="right">Male <span class="sort-arrow">↕</span></th>
+              <th data-col="female" class="right">Female <span class="sort-arrow">↕</span></th>
+              <th data-col="total" class="right">Total <span class="sort-arrow">↕</span></th>
+              <th data-col="status">Status <span class="sort-arrow">↕</span></th>
+            </tr>
+          </thead>
+          <tbody id="mainTbody"></tbody>
+        </table>
+      </div>
+    </div>
   </div>
 
 </main>
 
+<!-- SCHOOL DETAIL MODAL -->
+<div class="modal-overlay" id="detailModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="modalSchoolName">School Name</div>
+        <div class="modal-emis" id="modalEmisCode">EMIS: —</div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody">
+      <div class="modal-spinner" id="modalSpinner">
+        <div class="spinner-ring"></div>
+        <span>Fetching enrollment data...</span>
+      </div>
+      <div id="modalContent" style="display:none">
+        <div class="modal-stat-grid" id="modalStats"></div>
+        <div class="modal-table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Class</th>
+                <th class="right" style="color:var(--accent)">Male</th>
+                <th class="right" style="color:var(--pink)">Female</th>
+                <th class="right" style="color:var(--accent2)">Total</th>
+                <th class="right">Share</th>
+              </tr>
+            </thead>
+            <tbody id="modalTbody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div id="modalError" style="display:none; text-align:center; padding:40px 20px;">
+        <div style="font-size:28px;margin-bottom:12px">⚠️</div>
+        <div style="font-family:var(--mono);font-size:13px;color:var(--muted)" id="modalErrText">All proxies failed.</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <span class="modal-url" id="modalUrlText"></span>
+      <a class="modal-open-btn" id="modalOpenLink" href="#" target="_blank">↗ Open in tab</a>
+    </div>
+  </div>
+</div>
+
 <script>
+const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQFGaSeUAf7BVkqHbcQg91XXeZbrVi8rATTJ-jxmOC1taoFXYvFa5J-LL6-Q1KR-Pz5AMS7tG8Skn2h/pub?gid=2066596328&single=true&output=csv";
 const PROXIES = [
   "https://corsproxy.io/?url=",
   "https://api.allorigins.win/raw?url=",
   "https://thingproxy.freeboard.io/fetch/"
 ];
-
 const BASE = "https://sis.pesrp.edu.pk";
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-// School name lookup from Google Sheet CSV (same sheet as attendance dashboard)
-const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQFGaSeUAf7BVkqHbcQg91XXeZbrVi8rATTJ-jxmOC1taoFXYvFa5J-LL6-Q1KR-Pz5AMS7tG8Skn2h/pub?gid=2066596328&single=true&output=csv";
+let allRows = [];
+let lastResults = []; // { school, meta, enroll } per school
+let sortState = { col: 'total', asc: false };
+let currentModalEmis = '';
+let modalCache = {};
+let currentMarkaz = '';
+let currentDistrict = '';
 
-let schoolDb = {}; // emis -> row
-let searchHistory = JSON.parse(localStorage.getItem('emis_history') || '[]');
-
-// ── CSV load ─────────────────────────────────────────────────
-(async function loadCSV() {
-  try {
-    const resp = await fetch(CSV_URL);
-    const text = await resp.text();
-    const rows = parseCSV(text);
-    rows.forEach(r => { if (r['EMIS']) schoolDb[r['EMIS'].trim()] = r; });
-    document.getElementById('headerBadge').textContent = `${rows.length} schools loaded`;
-  } catch(e) {
-    document.getElementById('headerBadge').textContent = 'CSV unavailable';
-  }
-})();
-
+// ── CSV Parse ────────────────────────────────────────────────
 function parseCSV(text) {
   const lines = text.trim().split('\n');
   const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
   return lines.slice(1).map(line => {
     const vals = []; let cur = '', inQ = false;
-    for (let i = 0; i < line.length; i++) {
-      const c = line[i];
+    for (const c of line) {
       if (c === '"') { inQ = !inQ; }
       else if (c === ',' && !inQ) { vals.push(cur.trim()); cur = ''; }
-      else { cur += c; }
+      else cur += c;
     }
     vals.push(cur.trim());
     const row = {};
@@ -391,7 +424,56 @@ function parseCSV(text) {
   }).filter(r => r['EMIS']);
 }
 
-// ── CORS Proxy fetch ─────────────────────────────────────────
+function unique(arr) { return [...new Set(arr)].filter(Boolean).sort(); }
+
+function fillSelect(el, options, placeholder) {
+  el.innerHTML = `<option value="">${placeholder}</option>` +
+    options.map(o => `<option value="${o}">${o}</option>`).join('');
+  el.disabled = false;
+}
+
+// ── Filter Cascade ───────────────────────────────────────────
+document.getElementById('selDistrict').addEventListener('change', function() {
+  const d = this.value;
+  const selW = document.getElementById('selWing');
+  const selT = document.getElementById('selTehsil');
+  const selM = document.getElementById('selMarkaz');
+  selT.innerHTML = '<option>— Select Wing —</option>'; selT.disabled = true;
+  selM.innerHTML = '<option>— Select Tehsil —</option>'; selM.disabled = true;
+  document.getElementById('btnFetch').disabled = true;
+  if (!d) { selW.innerHTML = '<option>— Select District —</option>'; selW.disabled = true; return; }
+  fillSelect(selW, unique(allRows.filter(r => r['District'] === d).map(r => r['Wing'])), '— All Wings —');
+  selW.dispatchEvent(new Event('change'));
+});
+
+document.getElementById('selWing').addEventListener('change', function() {
+  const d = document.getElementById('selDistrict').value;
+  const w = this.value;
+  const selT = document.getElementById('selTehsil');
+  const selM = document.getElementById('selMarkaz');
+  selM.innerHTML = '<option>— Select Tehsil —</option>'; selM.disabled = true;
+  document.getElementById('btnFetch').disabled = true;
+  if (!d) return;
+  const filtered = allRows.filter(r => r['District'] === d && (!w || r['Wing'] === w));
+  fillSelect(selT, unique(filtered.map(r => r['Tehsil'])), '— Select Tehsil —');
+});
+
+document.getElementById('selTehsil').addEventListener('change', function() {
+  const d = document.getElementById('selDistrict').value;
+  const w = document.getElementById('selWing').value;
+  const t = this.value;
+  const selM = document.getElementById('selMarkaz');
+  document.getElementById('btnFetch').disabled = true;
+  if (!t) { selM.innerHTML = '<option>— Select Tehsil —</option>'; selM.disabled = true; return; }
+  const filtered = allRows.filter(r => r['District'] === d && (!w || r['Wing'] === w) && r['Tehsil'] === t);
+  fillSelect(selM, unique(filtered.map(r => r['Markaz'])), '— Select Markaz —');
+});
+
+document.getElementById('selMarkaz').addEventListener('change', function() {
+  document.getElementById('btnFetch').disabled = !this.value;
+});
+
+// ── Proxy Fetch ──────────────────────────────────────────────
 async function proxyFetch(url) {
   for (let attempt = 0; attempt < PROXIES.length * 2; attempt++) {
     const proxy = PROXIES[attempt % PROXIES.length];
@@ -400,213 +482,398 @@ async function proxyFetch(url) {
       if (!resp.ok) throw new Error('HTTP ' + resp.status);
       return await resp.json();
     } catch(e) {
-      if (attempt < PROXIES.length * 2 - 1) await sleep(250 * (attempt + 1));
+      if (attempt < PROXIES.length * 2 - 1) await sleep(200 * (attempt + 1));
     }
   }
-  throw new Error('All proxies failed. Please try again later.');
+  return null;
 }
 
-// ── Search ───────────────────────────────────────────────────
-async function doSearch() {
-  const code = document.getElementById('emisInput').value.trim();
-  if (!code) { showError('Please enter an EMIS code.'); return; }
-
-  clearResults(false);
-  setProgress(true, 'Fetching school IDs...');
-  setSearching(true);
-
-  try {
-    // Step 1: Get district/tehsil/markaz/school IDs
-    animateProgress(0, 40, 800);
-    const meta = await proxyFetch(`${BASE}/dashboard/get_dtms_by_emis_code?s_id_emis_code=${encodeURIComponent(code)}`);
-    if (!meta || !meta.s_id) throw new Error(`No school found for EMIS code "${code}".`);
-
-    const { s_district_idFk: dist, s_tehsil_idFk: teh, s_markaz_idFk: mar, s_id: sid } = meta;
-
-    // Step 2: Get enrollment data
-    setProgressText('Fetching enrollment data...');
-    animateProgress(40, 90, 600);
-    const enroll = await proxyFetch(`${BASE}/dashboard_revamp/get_gender_bar_area?district=${dist}&tehsil=${teh}&markaz=${mar}&school=${sid}&classes=&s_id_emis_code=`);
-    if (!enroll || !enroll.categories) throw new Error('Could not fetch enrollment data.');
-
-    animateProgress(90, 100, 300);
-    await sleep(350);
-    setProgress(false);
-
-    renderResults(code, meta, enroll);
-    saveHistory(code);
-
-  } catch(e) {
-    setProgress(false);
-    showError(e.message || 'Something went wrong. Please try again.');
-  }
-
-  setSearching(false);
-}
-
-// ── Render ───────────────────────────────────────────────────
-function renderResults(code, meta, enroll) {
+// ── Fetch One School ─────────────────────────────────────────
+async function fetchSchoolEnrollment(emis) {
+  const meta = await proxyFetch(`${BASE}/dashboard/get_dtms_by_emis_code?s_id_emis_code=${encodeURIComponent(emis)}`);
+  if (!meta || !meta.s_id) return { meta: null, enroll: null };
   const { s_district_idFk: dist, s_tehsil_idFk: teh, s_markaz_idFk: mar, s_id: sid } = meta;
-  const { categories, male, female } = enroll;
-
-  // School info from CSV if available
-  const schoolRow = schoolDb[code] || {};
-  const schoolName = schoolRow['School Name'] || null;
-  const level = schoolRow['Level'] || null;
-  const gender = schoolRow['Gender'] || null;
-  const tehsilName = schoolRow['Tehsil'] || null;
-  const district = schoolRow['District'] || null;
-
-  // Show banner
-  const banner = document.getElementById('schoolBanner');
-  document.getElementById('bannerName').textContent = schoolName || `School #${sid}`;
-  const metaParts = [district, tehsilName, level, gender].filter(Boolean);
-  document.getElementById('bannerMeta').textContent = metaParts.join(' · ') || 'School details';
-  document.getElementById('bannerEmis').textContent = `EMIS: ${code}`;
-  banner.classList.add('visible');
-
-  // Info cards — use human-readable names from CSV, fall back gracefully
-  document.getElementById('cDistrict').textContent = district || '—';
-  document.getElementById('cTehsil').textContent = tehsilName || '—';
-  document.getElementById('cMarkaz').textContent = schoolRow['Markaz'] || '—';
-  document.getElementById('cLevel').textContent = level || '—';
-  document.getElementById('cGender').textContent = gender ? `${gender} School` : '—';
-
-  const totM = male.reduce((a, b) => a + b, 0);
-  const totF = female.reduce((a, b) => a + b, 0);
-  const totAll = totM + totF;
-  document.getElementById('cTotal').textContent = totAll.toLocaleString();
-  document.getElementById('cTotalSub').textContent = `♂ ${totM}  ♀ ${totF}`;
-  document.getElementById('infoGrid').classList.add('visible');
-
-  // Gender summary legend
-  document.getElementById('genderSummary').innerHTML = `
-    <div class="gender-chip"><div class="gender-dot" style="background:#58a6ff"></div>Male — ${totM} students</div>
-    <div class="gender-chip"><div class="gender-dot" style="background:#d2a8ff"></div>Female — ${totF} students</div>
-    <div class="gender-chip"><div class="gender-dot" style="background:#3fb950"></div>Total — ${totAll} students</div>
-  `;
-
-  // Active classes only
-  const active = categories.map((c, i) => ({ c, m: male[i], f: female[i], t: male[i] + female[i] })).filter(x => x.t > 0);
-  const maxT = Math.max(...active.map(x => x.t), 1);
-
-  let rows = '';
-  for (const { c, m, f, t } of active) {
-    const pct = Math.round((t / totAll) * 100);
-    const bm = Math.max(Math.round((m / maxT) * 56), m > 0 ? 3 : 0);
-    const bf = Math.max(Math.round((f / maxT) * 56), f > 0 ? 3 : 0);
-    rows += `<tr>
-      <td class="class-name">Class ${c}</td>
-      <td class="num male"><div class="bar-wrap"><div class="bar bar-m" style="width:${bm}px"></div>${m}</div></td>
-      <td class="num female"><div class="bar-wrap"><div class="bar bar-f" style="width:${bf}px"></div>${f}</div></td>
-      <td class="num total-col">${t}</td>
-      <td class="num"><span style="font-family:var(--mono);font-size:11px;color:var(--muted)">${pct}%</span></td>
-    </tr>`;
-  }
-  // Total row
-  rows += `<tr class="total-row">
-    <td class="bold">Total</td>
-    <td class="num male bold">${totM}</td>
-    <td class="num female bold">${totF}</td>
-    <td class="num total-col bold">${totAll}</td>
-    <td class="num" style="color:var(--muted);font-family:var(--mono);font-size:11px">100%</td>
-  </tr>`;
-
-  document.getElementById('enrollTbody').innerHTML = rows;
-  document.getElementById('tableBadge').textContent = `${active.length} active class${active.length !== 1 ? 'es' : ''}`;
-
-  // Raw JSON
-  document.getElementById('rawPre').textContent = JSON.stringify({ meta, enroll }, null, 2);
-
-  document.getElementById('tableSection').classList.add('visible');
-  document.getElementById('emptyState').style.display = 'none';
+  const enroll = await proxyFetch(`${BASE}/dashboard_revamp/get_gender_bar_area?district=${dist}&tehsil=${teh}&markaz=${mar}&school=${sid}&classes=&s_id_emis_code=`);
+  return { meta, enroll };
 }
 
-// ── Helpers ──────────────────────────────────────────────────
-function clearResults(resetInput = true) {
-  if (resetInput) document.getElementById('emisInput').value = '';
-  document.getElementById('schoolBanner').classList.remove('visible');
-  document.getElementById('infoGrid').classList.remove('visible');
-  document.getElementById('tableSection').classList.remove('visible');
-  document.getElementById('emptyState').style.display = 'block';
-  document.getElementById('errorMsg').classList.remove('visible');
-  document.getElementById('rawPre').style.display = 'none';
-  document.getElementById('rawLabel').textContent = '▶ Show raw JSON';
-  setProgress(false);
+// ── Main Fetch ───────────────────────────────────────────────
+document.getElementById('btnFetch').addEventListener('click', fetchEnrollment);
+
+async function fetchEnrollment() {
+  const d = document.getElementById('selDistrict').value;
+  const w = document.getElementById('selWing').value;
+  const t = document.getElementById('selTehsil').value;
+  const m = document.getElementById('selMarkaz').value;
+  if (!d || !t || !m) return;
+
+  const schools = allRows.filter(r =>
+    r['District'] === d && (!w || r['Wing'] === w) && r['Tehsil'] === t && r['Markaz'] === m
+  );
+  if (!schools.length) { showError('No schools found for this selection.'); return; }
+
+  currentMarkaz = m;
+  currentDistrict = d;
+
+  // Reset UI
+  document.getElementById('emptyState').classList.remove('visible');
+  document.getElementById('errorState').classList.remove('visible');
+  document.getElementById('tablesWrap').classList.remove('visible');
+  document.getElementById('btnFetch').disabled = true;
+  document.getElementById('btnExport').style.display = 'none';
+  document.querySelectorAll('.card').forEach(c => c.classList.remove('visible'));
+
+  const pw = document.getElementById('progressWrap');
+  const pt = document.getElementById('progressText');
+  const pf = document.getElementById('progressFill');
+  pw.classList.add('visible');
+  pf.style.width = '0%';
+
+  let done = 0;
+  const total = schools.length;
+  const CONCURRENCY = 8;
+
+  lastResults = new Array(total).fill(null);
+
+  async function fetchOne(idx) {
+    const emis = schools[idx]['EMIS'];
+    const result = await fetchSchoolEnrollment(emis);
+    lastResults[idx] = { school: schools[idx], ...result };
+    done++;
+    const pct = Math.round((done / total) * 100);
+    pf.style.width = pct + '%';
+    pt.textContent = `Fetching ${done} / ${total} schools...`;
+  }
+
+  for (let i = 0; i < total; i += CONCURRENCY) {
+    const batch = [];
+    for (let j = i; j < Math.min(i + CONCURRENCY, total); j++) batch.push(fetchOne(j));
+    await Promise.all(batch);
+  }
+
+  pw.classList.remove('visible');
+  document.getElementById('btnFetch').disabled = false;
+
+  // Set date
+  const today = new Date();
+  document.getElementById('headerDate').textContent = today.toLocaleDateString('en-PK', { day:'2-digit', month:'short', year:'numeric' });
+
+  renderTable();
+  renderCards();
+  document.getElementById('btnExport').style.display = 'inline-flex';
+}
+
+// ── Parse Enrollment Numbers ─────────────────────────────────
+function sumEnroll(enroll) {
+  if (!enroll || !enroll.categories) return { male: 0, female: 0, total: 0 };
+  const male = (enroll.male || []).reduce((a, b) => a + b, 0);
+  const female = (enroll.female || []).reduce((a, b) => a + b, 0);
+  return { male, female, total: male + female };
+}
+
+// ── Render Table ─────────────────────────────────────────────
+function renderTable() {
+  const tbody = document.getElementById('mainTbody');
+  const col = sortState.col;
+  const asc = sortState.asc;
+
+  const objs = lastResults.map(r => {
+    const s = r.school;
+    const nums = sumEnroll(r.enroll);
+    return {
+      name: s['School Name'] || '—',
+      emis: s['EMIS'] || '',
+      level: s['Level'] || '—',
+      gender: s['Gender'] || '—',
+      male: nums.male,
+      female: nums.female,
+      total: nums.total,
+      hasData: !!(r.meta && r.enroll),
+      status: !!(r.meta && r.enroll) ? 1 : -1
+    };
+  });
+
+  const sorted = [...objs].sort((a, b) => {
+    let va = a[col], vb = b[col];
+    if (typeof va === 'string') va = va.toLowerCase();
+    if (typeof vb === 'string') vb = vb.toLowerCase();
+    if (va < vb) return asc ? -1 : 1;
+    if (va > vb) return asc ? 1 : -1;
+    return 0;
+  });
+
+  // Update arrows
+  document.querySelectorAll('#mainTable th[data-col]').forEach(th => {
+    th.classList.toggle('sorted', th.dataset.col === col);
+    const arrow = th.querySelector('.sort-arrow');
+    arrow.textContent = th.dataset.col === col ? (asc ? ' ↑' : ' ↓') : ' ↕';
+  });
+
+  const maxT = Math.max(...sorted.map(r => r.total), 1);
+
+  tbody.innerHTML = sorted.map(r => {
+    const bm = Math.max(Math.round((r.male / maxT) * 48), r.male > 0 ? 3 : 0);
+    const bf = Math.max(Math.round((r.female / maxT) * 48), r.female > 0 ? 3 : 0);
+    const safeName = r.name.replace(/'/g, "\\'");
+    const statusHtml = r.hasData
+      ? `<span class="status-pill status-ok"><span class="dot"></span>Loaded</span>`
+      : `<button class="status-pill status-err" onclick="openModal('${r.emis}','${safeName}')"><span class="dot"></span>Error — Retry ↗</button>`;
+    const maleHtml = r.hasData ? `<div class="bar-wrap"><div class="bar bar-m" style="width:${bm}px"></div>${r.male.toLocaleString()}</div>` : '—';
+    const femaleHtml = r.hasData ? `<div class="bar-wrap"><div class="bar bar-f" style="width:${bf}px"></div>${r.female.toLocaleString()}</div>` : '—';
+    const totalHtml = r.hasData
+      ? `<span style="cursor:pointer;color:var(--accent2);font-family:var(--mono);text-decoration:underline;text-decoration-style:dotted;" onclick="openModal('${r.emis}','${safeName}')">${r.total.toLocaleString()}</span>`
+      : '—';
+    return `<tr>
+      <td class="school-name">${r.name}</td>
+      <td class="level-tag">${r.level}</td>
+      <td class="level-tag">${r.gender}</td>
+      <td class="num male">${maleHtml}</td>
+      <td class="num female">${femaleHtml}</td>
+      <td class="num total-col">${totalHtml}</td>
+      <td>${statusHtml}</td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('tBadge').textContent = `${sorted.length} school${sorted.length !== 1 ? 's' : ''}`;
+  document.getElementById('tablesWrap').classList.add('visible');
+}
+
+// Sortable headers
+document.querySelectorAll('#mainTable th[data-col]').forEach(th => {
+  th.addEventListener('click', () => {
+    const col = th.dataset.col;
+    if (sortState.col === col) sortState.asc = !sortState.asc;
+    else { sortState.col = col; sortState.asc = true; }
+    renderTable();
+  });
+});
+
+// ── Render Cards ─────────────────────────────────────────────
+function renderCards() {
+  let totalM = 0, totalF = 0, errors = 0;
+  lastResults.forEach(r => {
+    const nums = sumEnroll(r.enroll);
+    totalM += nums.male;
+    totalF += nums.female;
+    if (!r.meta || !r.enroll) errors++;
+  });
+  const totalAll = totalM + totalF;
+  const mPct = totalAll ? Math.round(totalM / totalAll * 100) : 0;
+  const fPct = totalAll ? Math.round(totalF / totalAll * 100) : 0;
+
+  document.getElementById('cSchools').textContent = lastResults.length;
+  document.getElementById('cTotal').textContent = totalAll.toLocaleString();
+  document.getElementById('cMale').textContent = totalM.toLocaleString();
+  document.getElementById('cMalePct').textContent = `${mPct}% of total`;
+  document.getElementById('cFemale').textContent = totalF.toLocaleString();
+  document.getElementById('cFemalePct').textContent = `${fPct}% of total`;
+  document.getElementById('cErrors').textContent = errors;
+
+  document.querySelectorAll('.card').forEach(c => c.classList.add('visible'));
 }
 
 function showError(msg) {
-  const el = document.getElementById('errorMsg');
-  el.textContent = '⚠ ' + msg;
-  el.classList.add('visible');
+  document.getElementById('errorMsg').textContent = msg;
+  document.getElementById('errorState').classList.add('visible');
+  document.getElementById('emptyState').classList.remove('visible');
 }
 
-function setSearching(on) {
-  document.getElementById('btnSearch').disabled = on;
-  document.getElementById('btnSearch').textContent = on ? 'Searching...' : 'Search';
+// ── CSV Export ───────────────────────────────────────────────
+function exportCSV() {
+  if (!lastResults.length) return;
+
+  const today = new Date();
+  const dateStr = today.toISOString().slice(0, 10); // YYYY-MM-DD
+  const markazSlug = currentMarkaz.replace(/[^a-zA-Z0-9]/g, '_').replace(/_+/g, '_');
+  const filename = `Enrollment_${markazSlug}_${dateStr}.csv`;
+
+  // Header row
+  const rows = [
+    ['EMIS', 'School Name', 'District', 'Wing', 'Tehsil', 'Markaz', 'Level', 'Gender',
+     'Total Students', 'Male', 'Female',
+     'Class KG Male', 'Class KG Female', 'Class KG Total',
+     'Class 1 Male', 'Class 1 Female', 'Class 1 Total',
+     'Class 2 Male', 'Class 2 Female', 'Class 2 Total',
+     'Class 3 Male', 'Class 3 Female', 'Class 3 Total',
+     'Class 4 Male', 'Class 4 Female', 'Class 4 Total',
+     'Class 5 Male', 'Class 5 Female', 'Class 5 Total',
+     'Class 6 Male', 'Class 6 Female', 'Class 6 Total',
+     'Class 7 Male', 'Class 7 Female', 'Class 7 Total',
+     'Class 8 Male', 'Class 8 Female', 'Class 8 Total',
+     'Class 9 Male', 'Class 9 Female', 'Class 9 Total',
+     'Class 10 Male', 'Class 10 Female', 'Class 10 Total',
+     'Status']
+  ];
+
+  for (const r of lastResults) {
+    const s = r.school;
+    const e = r.enroll;
+    const nums = sumEnroll(e);
+    const row = [
+      s['EMIS'] || '',
+      s['School Name'] || '',
+      s['District'] || '',
+      s['Wing'] || '',
+      s['Tehsil'] || '',
+      s['Markaz'] || '',
+      s['Level'] || '',
+      s['Gender'] || '',
+      nums.total,
+      nums.male,
+      nums.female
+    ];
+
+    // Per-class data (categories 0..10 typically)
+    const categories = e ? (e.categories || []) : [];
+    const male = e ? (e.male || []) : [];
+    const female = e ? (e.female || []) : [];
+
+    // Build class map: category label -> {m, f}
+    const classMap = {};
+    categories.forEach((c, i) => { classMap[String(c)] = { m: male[i] || 0, f: female[i] || 0 }; });
+
+    // Standard classes: KG, 1-10
+    const classKeys = ['KG', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
+    for (const k of classKeys) {
+      const cls = classMap[k] || { m: 0, f: 0 };
+      row.push(cls.m, cls.f, cls.m + cls.f);
+    }
+
+    row.push(r.meta && r.enroll ? 'Loaded' : 'Error');
+    rows.push(row);
+  }
+
+  const csvContent = rows.map(r =>
+    r.map(v => {
+      const s = String(v == null ? '' : v);
+      return s.includes(',') || s.includes('"') || s.includes('\n') ? `"${s.replace(/"/g, '""')}"` : s;
+    }).join(',')
+  ).join('\n');
+
+  const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
-function setProgress(on, msg = '') {
-  document.getElementById('progressWrap').classList.toggle('visible', on);
-  if (msg) document.getElementById('progressText').textContent = msg;
-  if (!on) document.getElementById('progressFill').style.width = '0%';
+// ── Modal ────────────────────────────────────────────────────
+async function openModal(emis, schoolName) {
+  currentModalEmis = emis;
+  document.getElementById('modalSchoolName').textContent = schoolName;
+  document.getElementById('modalEmisCode').textContent = 'EMIS: ' + emis;
+
+  const url = `${BASE}/dashboard_revamp/get_gender_bar_area?district=...&s_id_emis_code=${emis}`;
+  document.getElementById('modalUrlText').textContent = `${BASE}/dashboard/get_dtms_by_emis_code?s_id_emis_code=${emis}`;
+  document.getElementById('modalOpenLink').href = `${BASE}/dashboard/get_dtms_by_emis_code?s_id_emis_code=${emis}`;
+
+  document.getElementById('detailModal').classList.add('open');
+  document.getElementById('modalSpinner').style.display = 'flex';
+  document.getElementById('modalContent').style.display = 'none';
+  document.getElementById('modalError').style.display = 'none';
+
+  // Check existing result first
+  const cached = lastResults.find(r => r.school['EMIS'] === emis);
+  if (cached && cached.meta && cached.enroll) {
+    renderModalContent(cached.enroll);
+    return;
+  }
+
+  // Re-fetch
+  if (modalCache[emis]) {
+    renderModalContent(modalCache[emis]);
+    return;
+  }
+
+  const result = await fetchSchoolEnrollment(emis);
+  modalCache[emis] = result.enroll;
+
+  // Update in lastResults too
+  const idx = lastResults.findIndex(r => r.school['EMIS'] === emis);
+  if (idx !== -1) {
+    lastResults[idx].meta = result.meta;
+    lastResults[idx].enroll = result.enroll;
+    renderTable();
+    renderCards();
+  }
+
+  if (currentModalEmis !== emis) return; // Modal changed
+
+  if (!result.enroll) {
+    document.getElementById('modalSpinner').style.display = 'none';
+    document.getElementById('modalErrText').textContent = 'All proxies failed. Try opening directly in browser.';
+    document.getElementById('modalError').style.display = 'block';
+    return;
+  }
+
+  renderModalContent(result.enroll);
 }
 
-function setProgressText(msg) {
-  document.getElementById('progressText').textContent = msg;
-}
+function renderModalContent(enroll) {
+  document.getElementById('modalSpinner').style.display = 'none';
 
-let progressTimer = null;
-function animateProgress(from, to, duration) {
-  clearInterval(progressTimer);
-  const steps = 30;
-  const interval = duration / steps;
-  const increment = (to - from) / steps;
-  let current = from;
-  document.getElementById('progressFill').style.width = from + '%';
-  progressTimer = setInterval(() => {
-    current += increment;
-    if (current >= to) { clearInterval(progressTimer); current = to; }
-    document.getElementById('progressFill').style.width = Math.round(current) + '%';
-  }, interval);
-}
+  const { categories, male, female } = enroll;
+  const totM = male.reduce((a, b) => a + b, 0);
+  const totF = female.reduce((a, b) => a + b, 0);
+  const totAll = totM + totF;
 
-function toggleRaw() {
-  const pre = document.getElementById('rawPre');
-  const lbl = document.getElementById('rawLabel');
-  const open = pre.style.display === 'none';
-  pre.style.display = open ? 'block' : 'none';
-  lbl.textContent = open ? '▼ Hide raw JSON' : '▶ Show raw JSON';
-}
+  document.getElementById('modalStats').innerHTML = [
+    { label: 'Total Students', value: totAll.toLocaleString(), cls: 'green' },
+    { label: 'Male', value: totM.toLocaleString(), cls: 'blue' },
+    { label: 'Female', value: totF.toLocaleString(), cls: 'pink' },
+    { label: 'Active Classes', value: categories.filter((_, i) => (male[i] || 0) + (female[i] || 0) > 0).length, cls: 'green' },
+  ].map(c => `<div class="modal-stat-card"><div class="modal-stat-label">${c.label}</div><div class="modal-stat-value ${c.cls}">${c.value}</div></div>`).join('');
 
-// ── History ──────────────────────────────────────────────────
-function saveHistory(code) {
-  searchHistory = [code, ...searchHistory.filter(c => c !== code)].slice(0, 8);
-  localStorage.setItem('emis_history', JSON.stringify(searchHistory));
-  renderHistory();
-}
+  const active = categories.map((c, i) => ({ c, m: male[i], f: female[i], t: male[i] + female[i] })).filter(x => x.t > 0);
+  const maxT = Math.max(...active.map(x => x.t), 1);
 
-function renderHistory() {
-  if (!searchHistory.length) { document.getElementById('historyPanel').style.display = 'none'; return; }
-  document.getElementById('historyPanel').style.display = 'block';
-  document.getElementById('historyList').innerHTML = searchHistory.map(code => {
-    const name = schoolDb[code] ? schoolDb[code]['School Name'] : code;
-    return `<div class="history-chip" onclick="loadHistory('${code}')" title="${name}">${code}</div>`;
+  let rows = active.map(({ c, m, f, t }) => {
+    const pct = Math.round((t / totAll) * 100);
+    const bm = Math.max(Math.round((m / maxT) * 50), m > 0 ? 3 : 0);
+    const bf = Math.max(Math.round((f / maxT) * 50), f > 0 ? 3 : 0);
+    return `<tr>
+      <td style="font-family:var(--mono);font-weight:600">Class ${c}</td>
+      <td class="num male"><div class="bar-wrap"><div class="bar bar-m" style="width:${bm}px"></div>${m}</div></td>
+      <td class="num female"><div class="bar-wrap"><div class="bar bar-f" style="width:${bf}px"></div>${f}</div></td>
+      <td class="num total-col">${t}</td>
+      <td class="num" style="font-size:11px;color:var(--muted);font-family:var(--mono)">${pct}%</td>
+    </tr>`;
   }).join('');
+  rows += `<tr class="total-row">
+    <td style="font-family:var(--mono);font-weight:600">Total</td>
+    <td class="num male" style="font-weight:600">${totM}</td>
+    <td class="num female" style="font-weight:600">${totF}</td>
+    <td class="num total-col" style="font-weight:600">${totAll}</td>
+    <td class="num" style="font-size:11px;color:var(--muted);font-family:var(--mono)">100%</td>
+  </tr>`;
+
+  document.getElementById('modalTbody').innerHTML = rows;
+  document.getElementById('modalContent').style.display = 'block';
 }
 
-function loadHistory(code) {
-  document.getElementById('emisInput').value = code;
-  doSearch();
+function closeModal() {
+  document.getElementById('detailModal').classList.remove('open');
+  currentModalEmis = '';
 }
+document.getElementById('detailModal').addEventListener('click', e => { if (e.target === document.getElementById('detailModal')) closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-// ── Keyboard ─────────────────────────────────────────────────
-document.getElementById('emisInput').addEventListener('keydown', e => {
-  if (e.key === 'Enter') doSearch();
-});
-
-// Init history
-renderHistory();
+// ── Init ─────────────────────────────────────────────────────
+(async function init() {
+  try {
+    const resp = await fetch(CSV_URL);
+    const text = await resp.text();
+    allRows = parseCSV(text);
+    const districts = unique(allRows.map(r => r['District']));
+    fillSelect(document.getElementById('selDistrict'), districts, '— Select District —');
+  } catch(e) {
+    showError('Failed to load school data from Google Sheets. Check network or CSV URL.');
+  }
+})();
 </script>
 </body>
 </html>
