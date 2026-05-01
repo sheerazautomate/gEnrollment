@@ -127,6 +127,22 @@
       </thead>
       <tbody id="tbody"></tbody>
     </table>
+    <!-- New Class-wise Breakdown Table -->
+<div id="classWiseSection" style="margin-top: 40px; display: none;">
+    <h3 style="margin-bottom: 15px; color: var(--accent);">Class-wise Enrollment Breakdown</h3>
+    <table id="classTable">
+        <thead>
+            <tr>
+                <th>School Name</th>
+                <th>Class</th>
+                <th style="text-align:right">Male</th>
+                <th style="text-align:right">Female</th>
+                <th style="text-align:right">Total</th>
+            </tr>
+        </thead>
+        <tbody id="classTbody"></tbody>
+    </table>
+</div>
     <div style="padding: 20px; text-align: right;">
         <button class="btn-fetch" style="background:var(--accent)" onclick="exportCSV()">Download CSV</button>
     </div>
@@ -229,12 +245,16 @@ async function handleFetch() {
 
 function renderUI() {
   const tbody = document.getElementById('tbody');
+  const classTbody = document.getElementById('classTbody');
   tbody.innerHTML = '';
+  classTbody.innerHTML = '';
   
   let total = 0, male = 0, female = 0;
 
   filteredResults.forEach(r => {
     total += r.total; male += r.male; female += r.female;
+    
+    // Fill School Summary Table
     tbody.innerHTML += `
       <tr>
         <td><b>${r.name}</b></td>
@@ -244,6 +264,18 @@ function renderUI() {
         <td style="text-align:right">${r.female}</td>
         <td style="text-align:right; font-weight:600; color:var(--accent2)">${r.total}</td>
       </tr>`;
+
+    // Fill Class-wise Detail Table
+    r.details.forEach(c => {
+      classTbody.innerHTML += `
+        <tr>
+          <td>${r.name}</td>
+          <td>${c.className}</td>
+          <td style="text-align:right">${c.m}</td>
+          <td style="text-align:right">${c.f}</td>
+          <td style="text-align:right">${c.t}</td>
+        </tr>`;
+    });
   });
 
   document.getElementById('valTotal').textContent = total.toLocaleString();
@@ -252,19 +284,30 @@ function renderUI() {
   
   document.querySelectorAll('.card').forEach(c => c.classList.add('visible'));
   document.getElementById('tablesWrap').classList.add('visible');
+  document.getElementById('classWiseSection').style.display = 'block';
 }
 
 function exportCSV() {
-  let csv = "School Name,EMIS,Level,Male,Female,Total\n";
+  const markaz = document.getElementById('selMarkaz').value;
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+  const filename = `Enrollment_${markaz}_${timestamp}.csv`;
+
+  // Headers updated for Class-wise detail
+  let csv = "School Name,EMIS,Level,Class,Male,Female,Total\n";
+  
   filteredResults.forEach(r => {
-    csv += `"${r.name}",${r.emis},${r.level},${r.male},${r.female},${r.total}\n`;
+    r.details.forEach(c => {
+      csv += `"${r.name}",${r.emis},${r.level},"${c.className}",${c.m},${c.f},${c.t}\n`;
+    });
   });
-  const blob = new Blob([csv], { type: 'text/csv' });
+
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
   const url = window.URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.setAttribute('href', url);
-  a.setAttribute('download', `Enrollment_${document.getElementById('selMarkaz').value}.csv`);
+  a.setAttribute('download', filename);
   a.click();
+  window.URL.revokeObjectURL(url);
 }
 
 // Start the app
