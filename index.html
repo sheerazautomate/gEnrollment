@@ -500,41 +500,80 @@ async function fetchSchoolEnrollment(emis) {
 // ── Main Fetch ───────────────────────────────────────────────
 document.getElementById('btnFetch').addEventListener('click', fetchEnrollment);
 
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbynghF5JD8hchaG8FWdd12NqaXXMBA2ZZrR5a16CP-kGVPWkzcZtfPx4ywvqGxql3v-QQ/exec";
+
 async function fetchEnrollment() {
   const d = document.getElementById('selDistrict').value;
-  const w = document.getElementById('selWing').value;
-  const t = document.getElementById('selTehsil').value;
   const m = document.getElementById('selMarkaz').value;
-  if (!d || !t || !m) return;
-
-  const schools = allRows.filter(r =>
-    r['District'] === d && (!w || r['Wing'] === w) && r['Tehsil'] === t && r['Markaz'] === m
-  );
-  if (!schools.length) { showError('No schools found for this selection.'); return; }
-
-  currentMarkaz = m;
-  currentDistrict = d;
+  if (!d || !m) return;
 
   // Reset UI
   document.getElementById('emptyState').classList.remove('visible');
   document.getElementById('errorState').classList.remove('visible');
   document.getElementById('tablesWrap').classList.remove('visible');
   document.getElementById('btnFetch').disabled = true;
-  document.getElementById('btnExport').style.display = 'none';
-  document.querySelectorAll('.card').forEach(c => c.classList.remove('visible'));
-
+  
   const pw = document.getElementById('progressWrap');
   const pt = document.getElementById('progressText');
   const pf = document.getElementById('progressFill');
+  
   pw.classList.add('visible');
-  pf.style.width = '0%';
+  pf.style.width = '20%'; // Initial jump
+  pt.textContent = `Requesting data for ${m}...`;
 
-  let done = 0;
-  const total = schools.length;
-  const CONCURRENCY = 8;
+  try {
+    const response = await fetch(`${SCRIPT_URL}?markaz=${encodeURIComponent(m)}`);
+    const result = await response.json();
 
-  lastResults = new Array(total).fill(null);
+    if (result.status === "busy") {
+      showError("Server is busy with other requests. Please wait 10 seconds and try again.");
+      pw.classList.remove('visible');
+      document.getElementById('btnFetch').disabled = false;
+      return;
+    }
 
+    if (result.status === "error") {
+      showError(result.message);
+      pw.classList.remove('visible');
+      document.getElementById('btnFetch').disabled = false;
+      return;
+    }
+
+    // Success! Map the data to the table
+    // The GAS returns 'data' which is an array of school objects
+    lastResults = result.data.map(school => ({
+      school: {
+        'EMIS': school.emis,
+        'School Name': school.name,
+        'Level': school.level,
+        'Gender': school.gender
+      },
+      // Create a mock enroll object to satisfy your existing renderTable() logic
+      enroll: {
+        male: [school.male],
+        female: [school.female],
+        categories: ["Total"]
+      },
+      meta: { s_id: true } // dummy meta to show 'Loaded' status
+    }));
+
+    pf.style.width = '100%';
+    pt.textContent = "Data received!";
+    
+    setTimeout(() => {
+      pw.classList.remove('visible');
+      renderTable();
+      renderCards();
+      document.getElementById('btnFetch').disabled = false;
+      document.getElementById('btnExport').style.display = 'inline-flex';
+    }, 500);
+
+  } catch (error) {
+    showError("Connection failed. The GAS backend might be sleeping or overloaded.");
+    pw.classList.remove('visible');
+    document.getElementById('btnFetch').disabled = false;
+  }
+}
   async function fetchOne(idx) {
     const emis = schools[idx]['EMIS'];
     const result = await fetchSchoolEnrollment(emis);
