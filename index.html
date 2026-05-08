@@ -8,20 +8,20 @@
 <style>
   :root[data-theme="dark"] {
     --bg: #0d1117; --surface: #161b22; --surface2: #1c2330; --border: #30363d;
-    --accent: #58a6ff; --accent2: #3fb950; --text: #e6edf3; --muted: #7d8590;
+    --accent: #58a6ff; --accent2: #3fb950; --pink: #f472b6; --text: #e6edf3; --muted: #7d8590;
   }
   :root[data-theme="light"] {
     --bg: #f6f8fa; --surface: #ffffff; --surface2: #f3f4f6; --border: #d0d7de;
-    --accent: #0969da; --accent2: #1a7f37; --text: #1f2328; --muted: #656d76;
+    --accent: #0969da; --accent2: #1a7f37; --pink: #d03592; --text: #1f2328; --muted: #656d76;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: 'IBM Plex Sans', sans-serif; transition: background 0.3s; font-size: 14px; }
+  body { background: var(--bg); color: var(--text); font-family: 'IBM Plex Sans', sans-serif; transition: background 0.3s; font-size: 14px; line-height: 1.5; }
   
   header {
     background: var(--surface); border-bottom: 1px solid var(--border);
     padding: 16px 24px; display: flex; align-items: center; gap: 16px;
-    position: sticky; top: 0; z-index: 100;
+    position: sticky; top: 0; z-index: 100; backdrop-filter: blur(8px);
   }
   .logo-mark { width: 36px; height: 36px; background: var(--accent2); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 600; color: #fff; }
   .header-date { margin-left: auto; font-family: 'IBM Plex Mono'; font-size: 12px; color: var(--accent2); padding: 4px 10px; border-radius: 4px; border: 1px solid var(--border); }
@@ -30,37 +30,73 @@
 
   /* FILTERS */
   .filter-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 24px; }
-  .filter-row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .filter-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; }
   .filter-group { display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 200px; }
   select { 
     background: var(--surface2); border: 1px solid var(--border); color: var(--text); 
-    padding: 10px; border-radius: 6px; cursor: pointer; outline: none; 
+    padding: 10px; border-radius: 6px; cursor: pointer; outline: none; appearance: none;
   }
 
   .btn-fetch {
     background: var(--accent2); color: white; border: none; padding: 10px 24px;
     border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s;
+    display: flex; align-items: center; gap: 8px; justify-content: center;
   }
-  .btn-fetch:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-fetch:disabled { opacity: 0.6; cursor: not-allowed; }
 
   /* CARDS */
-  .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
-  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; display: none; }
+  .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .card { 
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px; 
+    padding: 24px; display: none; position: relative; overflow: hidden;
+  }
   .card.visible { display: block; }
-  .card-label { font-size: 11px; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; }
-  .card-value { font-size: 28px; font-family: 'IBM Plex Mono'; font-weight: 600; }
+  .card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--accent-color, var(--accent2)); }
+  .card-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+  .card-value { font-size: 32px; font-family: 'IBM Plex Mono'; font-weight: 600; }
 
-  /* TABLE */
-  .tables-wrap { display: none; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
-  .tables-wrap.visible { display: block; }
-  table { width: 100%; border-collapse: collapse; text-align: left; }
-  th { background: var(--surface2); padding: 12px; font-size: 12px; color: var(--muted); text-transform: uppercase; border-bottom: 1px solid var(--border); cursor: pointer; }
-  td { padding: 12px; border-bottom: 1px solid var(--border); }
-  tr:hover { background: rgba(0,0,0,0.02); }
-
-  .progress-bar { height: 4px; background: var(--accent2); width: 0%; transition: width 0.3s; position: fixed; top: 0; left: 0; z-index: 1000; }
+  /* TABLE WRAPPER & SCROLL */
+  .tables-container { display: none; }
+  .tables-container.visible { display: block; }
+  .table-wrapper { 
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px; 
+    overflow-x: auto; margin-bottom: 32px; -webkit-overflow-scrolling: touch;
+  }
   
-  .theme-toggle { cursor: pointer; padding: 8px; border-radius: 50%; border: 1px solid var(--border); background: var(--surface2); color: var(--text); }
+  table { width: 100%; border-collapse: collapse; text-align: left; min-width: 600px; }
+  th { 
+    background: var(--surface2); padding: 14px; font-size: 11px; color: var(--muted); 
+    text-transform: uppercase; border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 10;
+  }
+  td { padding: 12px 14px; border-bottom: 1px solid var(--border); }
+  
+  /* Grouped School Header */
+  .school-header-row { background: var(--surface2); }
+  .school-header-row td { 
+    font-weight: 600; color: var(--accent); font-size: 13px; 
+    border-bottom: 2px solid var(--border); padding: 16px 14px;
+    position: sticky; top: 40px; z-index: 9;
+  }
+
+  /* LOADING STATE */
+  .skeleton { height: 20px; background: var(--surface2); border-radius: 4px; position: relative; overflow: hidden; }
+  .skeleton::after {
+    content: ""; position: absolute; top: 0; right: 0; bottom: 0; left: 0;
+    transform: translateX(-100%);
+    background-image: linear-gradient(90deg, rgba(255,255,255,0) 0, rgba(255,255,255,0.05) 20%, rgba(255,255,255,0.1) 60%, rgba(255,255,255,0));
+    animation: shimmer 2s infinite;
+  }
+  @keyframes shimmer { 100% { transform: translateX(100%); } }
+
+  .progress-bar { height: 3px; background: var(--accent2); width: 0%; transition: width 0.4s ease; position: fixed; top: 0; left: 0; z-index: 1000; }
+  .theme-toggle { cursor: pointer; padding: 8px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface2); color: var(--text); }
+
+  @media (max-width: 600px) {
+    main { padding: 16px; }
+    .card-value { font-size: 24px; }
+    .table-wrapper::after { content: 'Scroll →'; position: absolute; right: 10px; bottom: 10px; font-size: 10px; color: var(--muted); pointer-events: none; }
+  }
 </style>
 </head>
 <body>
@@ -92,59 +128,62 @@
         <label>Markaz</label>
         <select id="selMarkaz" disabled><option>Select Tehsil First</option></select>
       </div>
-      <div style="align-self: flex-end;">
+      <div style="flex: 0;">
         <button class="btn-fetch" id="btnFetch" disabled onclick="handleFetch()">Fetch Live Data</button>
       </div>
     </div>
   </div>
 
   <div class="cards-grid">
-    <div class="card" id="cardTotal">
+    <div class="card" id="cardTotal" style="--accent-color: var(--accent2)">
       <div class="card-label">Total Enrollment</div>
       <div class="card-value" style="color:var(--accent2)" id="valTotal">0</div>
     </div>
-    <div class="card" id="cardMale">
+    <div class="card" id="cardMale" style="--accent-color: var(--accent)">
       <div class="card-label">Male</div>
       <div class="card-value" style="color:var(--accent)" id="valMale">0</div>
     </div>
-    <div class="card" id="cardFemale">
+    <div class="card" id="cardFemale" style="--accent-color: var(--pink)">
       <div class="card-label">Female</div>
       <div class="card-value" style="color:var(--pink)" id="valFemale">0</div>
     </div>
   </div>
 
-  <div class="tables-wrap" id="tablesWrap">
-    <table id="mainTable">
-      <thead>
-        <tr>
-          <th>School Name</th>
-          <th>EMIS</th>
-          <th>Level</th>
-          <th style="text-align:right">Male</th>
-          <th style="text-align:right">Female</th>
-          <th style="text-align:right">Total</th>
-        </tr>
-      </thead>
-      <tbody id="tbody"></tbody>
-    </table>
-    <!-- New Class-wise Breakdown Table -->
-<div id="classWiseSection" style="margin-top: 40px; display: none;">
-    <h3 style="margin-bottom: 15px; color: var(--accent);">Class-wise Enrollment Breakdown</h3>
-    <table id="classTable">
+  <div class="tables-container" id="tablesContainer">
+    <h3 style="margin-bottom: 12px; font-weight: 500;">School Summary</h3>
+    <div class="table-wrapper">
+      <table id="mainTable">
         <thead>
-            <tr>
-                <th>School Name</th>
-                <th>Class</th>
-                <th style="text-align:right">Male</th>
-                <th style="text-align:right">Female</th>
-                <th style="text-align:right">Total</th>
-            </tr>
+          <tr>
+            <th>School Name</th>
+            <th>EMIS</th>
+            <th>Level</th>
+            <th style="text-align:right">Male</th>
+            <th style="text-align:right">Female</th>
+            <th style="text-align:right">Total</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+
+    <h3 style="margin: 32px 0 12px; font-weight: 500;">Class-wise Detailed Breakdown</h3>
+    <div class="table-wrapper">
+      <table id="classTable">
+        <thead>
+          <tr>
+            <th>Class Level</th>
+            <th style="text-align:right">Male</th>
+            <th style="text-align:right">Female</th>
+            <th style="text-align:right">Total</th>
+          </tr>
         </thead>
         <tbody id="classTbody"></tbody>
-    </table>
-</div>
-    <div style="padding: 20px; text-align: right;">
-        <button class="btn-fetch" style="background:var(--accent)" onclick="exportCSV()">Download CSV</button>
+      </table>
+    </div>
+
+    <div style="display: flex; justify-content: flex-end; margin-top: 24px;">
+        <button class="btn-fetch" style="background:var(--accent)" onclick="exportCSV()">Download CSV Report</button>
     </div>
   </div>
 </main>
@@ -156,25 +195,20 @@ const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbynghF5JD8hchaG8FWdd
 let allData = [];
 let filteredResults = [];
 
-// --- THEME ---
 function toggleTheme() {
   const root = document.documentElement;
   const current = root.getAttribute('data-theme');
   root.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
 }
 
-// --- INITIALIZATION (FIXED AWAIT ERROR) ---
 async function init() {
   try {
     const response = await fetch(CSV_URL);
     const text = await response.text();
     allData = parseCSV(text);
-    
     populateDropdown('selDistrict', [...new Set(allData.map(r => r.District))]);
-    document.getElementById('headerDate').textContent = new Date().toLocaleDateString();
-  } catch (e) {
-    alert("Error loading master data. Please refresh.");
-  }
+    document.getElementById('headerDate').textContent = new Date().toLocaleDateString('en-GB');
+  } catch (e) { alert("Error loading master data."); }
 }
 
 function parseCSV(text) {
@@ -189,7 +223,6 @@ function parseCSV(text) {
   });
 }
 
-// --- DROPDOWN LOGIC ---
 function populateDropdown(id, list) {
   const el = document.getElementById(id);
   el.innerHTML = `<option value="">Select ${id.replace('sel','')}</option>` + 
@@ -212,34 +245,32 @@ document.getElementById('selMarkaz').addEventListener('change', (e) => {
   document.getElementById('btnFetch').disabled = !e.target.value;
 });
 
-// --- FETCH FROM GAS ENGINE ---
 async function handleFetch() {
   const markaz = document.getElementById('selMarkaz').value;
   const btn = document.getElementById('btnFetch');
   const pb = document.getElementById('progressBar');
   
   btn.disabled = true;
-  btn.textContent = "Processing...";
-  pb.style.width = "40%";
+  btn.innerHTML = `<span>Fetching...</span>`;
+  pb.style.width = "85%"; // Smoother jump
 
   try {
     const response = await fetch(`${SCRIPT_URL}?markaz=${encodeURIComponent(markaz)}`);
     const result = await response.json();
 
-    if (result.status === "busy") {
-      alert("Server is serving other users. Please try again in 10 seconds.");
-    } else if (result.status === "success") {
+    if (result.status === "success") {
       filteredResults = result.data;
       renderUI();
+      pb.style.width = "100%";
+      setTimeout(() => pb.style.width = "0%", 500);
     } else {
-      alert("Error: " + result.message);
+      alert(result.message || "Server Error");
     }
   } catch (e) {
     alert("Backend Connection Failed.");
   } finally {
     btn.disabled = false;
     btn.textContent = "Fetch Live Data";
-    pb.style.width = "0%";
   }
 }
 
@@ -254,26 +285,30 @@ function renderUI() {
   filteredResults.forEach(r => {
     total += r.total; male += r.male; female += r.female;
     
-    // Fill School Summary Table
+    // Main Summary Table
     tbody.innerHTML += `
       <tr>
-        <td><b>${r.name}</b></td>
-        <td style="font-family:monospace">${r.emis}</td>
-        <td>${r.level}</td>
-        <td style="text-align:right">${r.male}</td>
-        <td style="text-align:right">${r.female}</td>
-        <td style="text-align:right; font-weight:600; color:var(--accent2)">${r.total}</td>
+        <td><div style="font-weight:600">${r.name}</div></td>
+        <td style="font-family:monospace; font-size:12px">${r.emis}</td>
+        <td><span style="font-size:10px; background:var(--surface2); padding:2px 6px; border-radius:4px">${r.level}</span></td>
+        <td style="text-align:right">${r.male.toLocaleString()}</td>
+        <td style="text-align:right">${r.female.toLocaleString()}</td>
+        <td style="text-align:right; font-weight:600; color:var(--accent2)">${r.total.toLocaleString()}</td>
       </tr>`;
 
-    // Fill Class-wise Detail Table
+    // Grouped Class Detail Table
+    classTbody.innerHTML += `
+      <tr class="school-header-row">
+        <td colspan="4">${r.name} <span style="opacity:0.6; font-weight:400; font-family:monospace; margin-left:8px;">(${r.emis})</span></td>
+      </tr>`;
+
     r.details.forEach(c => {
       classTbody.innerHTML += `
         <tr>
-          <td>${r.name}</td>
-          <td>${c.className}</td>
+          <td style="padding-left:30px; color:var(--muted)">${c.className}</td>
           <td style="text-align:right">${c.m}</td>
           <td style="text-align:right">${c.f}</td>
-          <td style="text-align:right">${c.t}</td>
+          <td style="text-align:right; font-weight:500">${c.t}</td>
         </tr>`;
     });
   });
@@ -283,16 +318,12 @@ function renderUI() {
   document.getElementById('valFemale').textContent = female.toLocaleString();
   
   document.querySelectorAll('.card').forEach(c => c.classList.add('visible'));
-  document.getElementById('tablesWrap').classList.add('visible');
-  document.getElementById('classWiseSection').style.display = 'block';
+  document.getElementById('tablesContainer').classList.add('visible');
 }
 
 function exportCSV() {
   const markaz = document.getElementById('selMarkaz').value;
-  const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
-  const filename = `Enrollment_${markaz}_${timestamp}.csv`;
-
-  // Headers updated for Class-wise detail
+  const timestamp = new Date().toISOString().slice(0, 10);
   let csv = "School Name,EMIS,Level,Class,Male,Female,Total\n";
   
   filteredResults.forEach(r => {
@@ -304,13 +335,11 @@ function exportCSV() {
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
   const url = window.URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.setAttribute('href', url);
-  a.setAttribute('download', filename);
+  a.href = url;
+  a.download = `Enrollment_${markaz}_${timestamp}.csv`;
   a.click();
-  window.URL.revokeObjectURL(url);
 }
 
-// Start the app
 init();
 </script>
 
