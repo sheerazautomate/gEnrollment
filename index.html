@@ -2,10 +2,10 @@
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
-<title>PESRP Markaz Enrollment | Live Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes"/>
+<title>PESRP Markaz Enrollment | Mobile-Optimized</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
 <style>
   * {
     margin: 0;
@@ -15,30 +15,29 @@
 
   :root[data-theme="dark"] {
     --bg-gradient: radial-gradient(circle at 10% 20%, rgba(10, 20, 30, 1) 0%, rgba(0, 0, 0, 0.95) 100%);
-    --surface: rgba(22, 27, 34, 0.75);
-    --surface2: rgba(30, 36, 44, 0.85);
+    --surface: rgba(22, 27, 34, 0.85);
+    --surface2: rgba(30, 36, 44, 0.9);
     --glass-border: rgba(56, 139, 253, 0.25);
-    --accent: #3b82f6;
-    --accent2: #10b981;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
     --pink: #f472b6;
-    --text: #f1f5f9;
-    --text-muted: #94a3b8;
-    --border-glow: 0 0 0 1px rgba(59,130,246,0.2);
-    --shadow: 0 20px 35px -12px rgba(0,0,0,0.5);
+    --text: #e6edf3;
+    --text-muted: #7d8590;
+    --border-glow: 0 0 0 1px rgba(88,166,255,0.2);
+    --shadow: 0 8px 20px rgba(0,0,0,0.3);
   }
 
   :root[data-theme="light"] {
     --bg-gradient: linear-gradient(145deg, #f0f4fa 0%, #ffffff 100%);
-    --surface: rgba(255, 255, 255, 0.85);
-    --surface2: rgba(245, 248, 250, 0.9);
-    --glass-border: rgba(59, 130, 246, 0.3);
-    --accent: #2563eb;
-    --accent2: #059669;
-    --pink: #db2777;
-    --text: #0f172a;
-    --text-muted: #475569;
-    --border-glow: 0 0 0 1px rgba(0,0,0,0.05);
-    --shadow: 0 20px 35px -12px rgba(0,0,0,0.08);
+    --surface: rgba(255, 255, 255, 0.9);
+    --surface2: rgba(245, 248, 250, 0.95);
+    --glass-border: rgba(9, 105, 218, 0.2);
+    --accent: #0969da;
+    --accent2: #1a7f37;
+    --pink: #d03592;
+    --text: #1f2328;
+    --text-muted: #656d76;
+    --shadow: 0 4px 12px rgba(0,0,0,0.08);
   }
 
   body {
@@ -48,128 +47,96 @@
     font-size: 14px;
     line-height: 1.5;
     min-height: 100vh;
-    backdrop-filter: blur(2px);
-    transition: background 0.25s ease, color 0.2s;
-  }
-
-  /* animated background noise + glow */
-  body::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle at 30% 10%, rgba(59,130,246,0.03) 0%, transparent 70%);
-    pointer-events: none;
-    z-index: 0;
+    transition: background 0.25s ease;
   }
 
   main {
-    position: relative;
-    z-index: 2;
-    max-width: 1400px;
+    max-width: 800px;
     margin: 0 auto;
-    padding: 20px 24px 40px;
+    padding: 16px;
   }
 
-  /* Glassmorphic header */
+  /* Header */
   header {
     position: sticky;
-    top: 16px;
+    top: 12px;
     z-index: 100;
-    margin: 0 24px 20px;
+    margin: 0 12px 20px;
     background: var(--surface);
     backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border-radius: 2rem;
+    border-radius: 1.5rem;
     border: 1px solid var(--glass-border);
     box-shadow: var(--shadow);
-    padding: 12px 24px;
+    padding: 12px 20px;
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 12px;
     flex-wrap: wrap;
-    transition: all 0.2s;
   }
 
   .logo-icon {
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
     background: linear-gradient(135deg, var(--accent2), var(--accent));
-    border-radius: 1.2rem;
+    border-radius: 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 22px;
-    box-shadow: 0 6px 12px -6px rgba(0,0,0,0.3);
+    font-size: 20px;
   }
 
   .brand-text {
     font-weight: 700;
-    font-size: 1.2rem;
+    font-size: 1rem;
     letter-spacing: -0.3px;
   }
   .brand-sub {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     color: var(--text-muted);
-    margin-top: 2px;
   }
 
   .header-date {
     margin-left: auto;
     font-family: 'JetBrains Mono', monospace;
-    background: rgba(59,130,246,0.15);
-    padding: 8px 16px;
+    background: rgba(88,166,255,0.15);
+    padding: 6px 12px;
     border-radius: 40px;
-    font-size: 0.75rem;
-    font-weight: 500;
-    backdrop-filter: blur(4px);
-    border: 1px solid var(--glass-border);
+    font-size: 0.7rem;
   }
 
   .theme-toggle {
     background: var(--surface2);
     border: 1px solid var(--glass-border);
-    backdrop-filter: blur(10px);
-    padding: 8px 14px;
+    padding: 6px 12px;
     border-radius: 2rem;
     cursor: pointer;
-    font-size: 1.2rem;
-    transition: 0.2s;
+    font-size: 1rem;
     display: flex;
     gap: 6px;
     align-items: center;
     color: var(--text);
   }
-  .theme-toggle:hover {
-    transform: scale(0.96);
-    background: var(--accent);
-    color: white;
-  }
 
-  /* Filter panel - glass + lively */
+  /* Filter Panel */
   .filter-panel {
     background: var(--surface);
     backdrop-filter: blur(12px);
     border: 1px solid var(--glass-border);
-    border-radius: 2rem;
-    padding: 24px 28px;
-    margin-bottom: 32px;
+    border-radius: 1.5rem;
+    padding: 20px;
+    margin-bottom: 24px;
     box-shadow: var(--shadow);
-    transition: all 0.2s;
   }
 
   .filter-row {
     display: flex;
-    gap: 18px;
+    gap: 12px;
     flex-wrap: wrap;
-    align-items: flex-end;
   }
 
   .filter-group {
     flex: 1;
-    min-width: 180px;
+    min-width: 160px;
   }
 
   label {
@@ -179,7 +146,7 @@
     letter-spacing: 1px;
     font-weight: 600;
     color: var(--text-muted);
-    margin-bottom: 8px;
+    margin-bottom: 6px;
   }
 
   select {
@@ -187,283 +154,271 @@
     background: var(--surface2);
     border: 1px solid var(--glass-border);
     color: var(--text);
-    padding: 12px 14px;
-    border-radius: 1.2rem;
+    padding: 10px 12px;
+    border-radius: 1rem;
     font-family: 'Inter', monospace;
-    font-weight: 500;
+    font-size: 0.85rem;
     cursor: pointer;
     outline: none;
-    transition: all 0.2s;
-    backdrop-filter: blur(4px);
-  }
-  select:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
   }
 
   .btn-fetch {
-    background: linear-gradient(105deg, var(--accent2) 0%, #0e9f6e 100%);
+    background: linear-gradient(105deg, var(--accent2) 0%, #2c8c5a 100%);
     border: none;
-    padding: 12px 28px;
-    border-radius: 2rem;
+    padding: 10px 24px;
+    border-radius: 1.5rem;
     font-weight: 700;
     font-size: 0.85rem;
     cursor: pointer;
     color: white;
     display: inline-flex;
     align-items: center;
-    gap: 10px;
-    transition: transform 0.15s, box-shadow 0.15s;
-    box-shadow: 0 8px 18px -8px rgba(16,185,129,0.4);
-  }
-  .btn-fetch:active { transform: scale(0.97); }
-  .btn-fetch:disabled {
-    opacity: 0.6;
-    transform: none;
-    cursor: not-allowed;
+    gap: 8px;
+    margin-top: 24px;
+    width: 100%;
+    justify-content: center;
   }
 
-  /* Metric Cards - animated lively */
+  /* Stats Cards */
   .cards-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 20px;
-    margin-bottom: 40px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
   }
 
   .card {
     background: var(--surface);
     backdrop-filter: blur(12px);
     border: 1px solid var(--glass-border);
-    border-radius: 1.8rem;
-    padding: 24px 22px;
+    border-radius: 1.2rem;
+    padding: 16px;
     display: none;
-    position: relative;
-    transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-    transform: translateY(10px);
-    box-shadow: var(--shadow);
+    text-align: center;
   }
   .card.visible {
     display: block;
-    animation: cardPop 0.5s ease forwards;
+    animation: cardPop 0.4s ease;
   }
   @keyframes cardPop {
-    0% { opacity: 0; transform: translateY(20px); }
-    100% { opacity: 1; transform: translateY(0px); }
-  }
-
-  .card:hover {
-    transform: translateY(-4px);
-    border-color: var(--accent);
-    box-shadow: 0 24px 40px -18px rgba(0,0,0,0.4);
-  }
-
-  .card::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 1.8rem;
-    padding: 1px;
-    background: radial-gradient(ellipse at 30% 0%, rgba(59,130,246,0.3), transparent);
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
   }
 
   .card-label {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     text-transform: uppercase;
     letter-spacing: 0.06em;
     font-weight: 600;
     color: var(--text-muted);
-    margin-bottom: 12px;
+    margin-bottom: 8px;
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 6px;
   }
 
   .card-value {
-    font-size: 3rem;
+    font-size: 1.8rem;
     font-family: 'JetBrains Mono', monospace;
     font-weight: 700;
-    line-height: 1.1;
   }
 
-  /* Table sections */
-  .tables-container {
-    display: none;
-    margin-top: 10px;
-  }
-  .tables-container.visible {
-    display: block;
-    animation: fadeSlideUp 0.5s ease;
-  }
-  @keyframes fadeSlideUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+  /* Accordion Schools */
+  .schools-accordion {
+    margin-bottom: 20px;
   }
 
-  .section-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin: 32px 0 16px 0;
+  .accordion-controls {
     display: flex;
-    align-items: center;
     gap: 12px;
-    letter-spacing: -0.3px;
-  }
-  .section-title i {
-    color: var(--accent2);
-    font-size: 1.3rem;
+    margin-bottom: 16px;
+    justify-content: flex-end;
   }
 
-  .table-wrapper {
+  .accordion-btn {
+    background: var(--surface2);
+    border: 1px solid var(--glass-border);
+    padding: 8px 16px;
+    border-radius: 2rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--text);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: 0.2s;
+  }
+
+  .accordion-btn:active {
+    transform: scale(0.96);
+  }
+
+  .school-card {
     background: var(--surface);
     backdrop-filter: blur(8px);
     border: 1px solid var(--glass-border);
-    border-radius: 1.5rem;
-    overflow-x: auto;
-    margin-bottom: 30px;
+    border-radius: 1.2rem;
+    margin-bottom: 12px;
+    overflow: hidden;
     transition: all 0.2s;
-    box-shadow: var(--shadow);
   }
 
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.85rem;
-    min-width: 600px;
-  }
-  th {
-    background: rgba(59,130,246,0.08);
-    padding: 16px 14px;
-    font-size: 0.7rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--text-muted);
-    border-bottom: 1px solid var(--glass-border);
-  }
-  td {
-    padding: 14px;
-    border-bottom: 1px solid rgba(59,130,246,0.1);
-  }
-
-  .school-header-row td {
-    font-weight: 700;
-    background: var(--surface2);
-    font-size: 0.9rem;
-    border-top: 2px solid var(--accent);
-    border-bottom: 2px solid var(--accent);
-    color: var(--accent);
-    padding: 16px 14px;
-  }
-  .school-header-row td i {
-    margin-right: 8px;
-  }
-
-  /* download button */
-  .download-wrap {
+  .school-header {
+    padding: 16px;
+    cursor: pointer;
     display: flex;
-    justify-content: flex-end;
-    margin-top: 20px;
+    align-items: center;
+    gap: 12px;
+    transition: background 0.2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .school-header:active {
+    background: rgba(88,166,255,0.1);
+  }
+
+  .school-icon {
+    width: 44px;
+    height: 44px;
+    background: rgba(88,166,255,0.15);
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+
+  .school-info {
+    flex: 1;
+  }
+
+  .school-name {
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .school-meta {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .school-stats {
+    display: flex;
+    gap: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+  .school-stats span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .expand-icon {
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+  }
+  .school-card.expanded .expand-icon {
+    transform: rotate(180deg);
+  }
+
+  .school-details {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border-top: 0px solid var(--glass-border);
+  }
+  .school-card.expanded .school-details {
+    max-height: 2000px;
+    border-top-width: 1px;
+  }
+
+  .class-table {
+    width: 100%;
+    padding: 12px 16px;
+  }
+  .class-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(88,166,255,0.1);
+  }
+  .class-row:last-child {
+    border-bottom: none;
+  }
+  .class-name {
+    font-weight: 500;
+    font-size: 0.85rem;
+    flex: 1;
+  }
+  .class-numbers {
+    display: flex;
+    gap: 16px;
+    font-size: 0.8rem;
+  }
+  .class-male { color: var(--accent); }
+  .class-female { color: var(--pink); }
+  .class-total { font-weight: 700; color: var(--accent2); }
+
+  .download-wrap {
+    margin-top: 24px;
   }
   .btn-outline {
     background: transparent;
     border: 1.5px solid var(--accent);
-    padding: 12px 28px;
+    padding: 12px 24px;
     border-radius: 2rem;
     color: var(--accent);
     font-weight: 600;
     cursor: pointer;
-    transition: 0.2s;
     display: inline-flex;
-    gap: 12px;
+    gap: 10px;
     align-items: center;
-    backdrop-filter: blur(5px);
-  }
-  .btn-outline:hover {
-    background: var(--accent);
-    color: white;
-    transform: translateY(-2px);
+    justify-content: center;
+    width: 100%;
   }
 
-  /* progress bar neon */
   .progress-bar {
-    height: 4px;
+    height: 3px;
     background: linear-gradient(90deg, var(--accent2), var(--accent), var(--pink));
     width: 0%;
     position: fixed;
     top: 0;
     left: 0;
     z-index: 2000;
-    transition: width 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-    box-shadow: 0 0 8px var(--accent2);
+    transition: width 0.3s;
   }
 
-  /* mobile improvements */
-  @media (max-width: 700px) {
-    main {
-      padding: 16px;
-    }
-    header {
-      margin: 12px;
-      padding: 12px 18px;
-      border-radius: 1.5rem;
-    }
-    .brand-text {
-      font-size: 1rem;
-    }
-    .filter-panel {
-      padding: 20px;
-      border-radius: 1.5rem;
-    }
-    .filter-row {
-      gap: 12px;
-    }
-    .card-value {
-      font-size: 2.2rem;
-    }
-    td, th {
-      padding: 10px 8px;
-      font-size: 0.75rem;
-    }
-    .school-header-row td {
-      font-size: 0.8rem;
-    }
+  @media (max-width: 500px) {
+    main { padding: 12px; }
+    header { margin: 0 8px 16px; padding: 10px 16px; }
+    .school-name { font-size: 0.9rem; }
+    .school-stats { font-size: 0.7rem; }
+    .card-value { font-size: 1.5rem; }
   }
 
-  /* custom scroll */
-  ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
-  ::-webkit-scrollbar-track {
-    background: var(--surface2);
-    border-radius: 10px;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: var(--accent);
-    border-radius: 10px;
-  }
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--surface2); }
+  ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
 
-  /* badge & skeleton */
-  .badge-level {
-    background: rgba(59,130,246,0.2);
-    padding: 4px 10px;
-    border-radius: 40px;
-    font-size: 0.7rem;
-    font-weight: 500;
-  }
-  .skeleton-text {
-    background: linear-gradient(90deg, var(--surface2) 25%, rgba(59,130,246,0.1) 50%, var(--surface2) 75%);
-    background-size: 200% 100%;
-    animation: skeletonLoad 1.5s infinite;
-  }
-  @keyframes skeletonLoad {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
+  .badge {
+    background: rgba(88,166,255,0.2);
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 0.65rem;
   }
 </style>
 </head>
@@ -473,10 +428,10 @@
 <header>
   <div class="logo-icon"><i class="fas fa-chalkboard-user" style="color:white"></i></div>
   <div>
-    <div class="brand-text">PESRP Enrollment Engine <span style="font-size:0.7rem;font-weight:400;">| Markaz Live</span></div>
-    <div class="brand-sub">real-time school analytics · unified dashboard</div>
+    <div class="brand-text">PESRP Markaz</div>
+    <div class="brand-sub">Enrollment Dashboard</div>
   </div>
-  <button class="theme-toggle" id="themeToggleBtn" aria-label="Toggle theme"><i class="fas fa-moon"></i><i class="fas fa-sun" style="display:none"></i> <span>Theme</span></button>
+  <button class="theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon"></i><i class="fas fa-sun" style="display:none"></i></button>
   <div class="header-date" id="headerDate">—</div>
 </header>
 
@@ -485,90 +440,54 @@
     <div class="filter-row">
       <div class="filter-group">
         <label><i class="fas fa-map-marker-alt"></i> District</label>
-        <select id="selDistrict"><option>Loading districts...</option></select>
+        <select id="selDistrict"><option>Loading...</option></select>
       </div>
       <div class="filter-group">
         <label><i class="fas fa-city"></i> Tehsil</label>
-        <select id="selTehsil" disabled><option>Select District First</option></select>
+        <select id="selTehsil" disabled><option>Select District</option></select>
       </div>
       <div class="filter-group">
         <label><i class="fas fa-flag-checkered"></i> Markaz</label>
-        <select id="selMarkaz" disabled><option>Select Tehsil First</option></select>
-      </div>
-      <div style="flex: 0;">
-        <button class="btn-fetch" id="btnFetch" disabled onclick="handleFetch()"><i class="fas fa-database"></i> Fetch Live Data</button>
+        <select id="selMarkaz" disabled><option>Select Tehsil</option></select>
       </div>
     </div>
+    <button class="btn-fetch" id="btnFetch" disabled onclick="handleFetch()"><i class="fas fa-database"></i> Fetch Live Data</button>
   </div>
 
   <div class="cards-grid">
-    <div class="card" id="cardTotal" style="--accent-color: var(--accent2)">
-      <div class="card-label"><i class="fas fa-users"></i> Total Enrollment</div>
-      <div class="card-value" id="valTotal">0</div>
-    </div>
-    <div class="card" id="cardMale" style="--accent-color: var(--accent)">
-      <div class="card-label"><i class="fas fa-mars"></i> Male Students</div>
-      <div class="card-value" id="valMale">0</div>
-    </div>
-    <div class="card" id="cardFemale" style="--accent-color: var(--pink)">
-      <div class="card-label"><i class="fas fa-venus"></i> Female Students</div>
-      <div class="card-value" id="valFemale">0</div>
-    </div>
+    <div class="card" id="cardTotal"><div class="card-label"><i class="fas fa-users"></i> Total</div><div class="card-value" id="valTotal">0</div></div>
+    <div class="card" id="cardMale"><div class="card-label"><i class="fas fa-mars"></i> Male</div><div class="card-value" id="valMale">0</div></div>
+    <div class="card" id="cardFemale"><div class="card-label"><i class="fas fa-venus"></i> Female</div><div class="card-value" id="valFemale">0</div></div>
   </div>
 
-  <div class="tables-container" id="tablesContainer">
-    <div class="section-title"><i class="fas fa-school"></i> Schools summary · aggregated by markaz</div>
-    <div class="table-wrapper">
-      <table id="mainTable">
-        <thead>
-          <tr><th>School Name</th><th>EMIS Code</th><th>Level</th><th style="text-align:right">Male</th><th style="text-align:right">Female</th><th style="text-align:right">Total</th></tr>
-        </thead>
-        <tbody id="tbody"></tbody>
-      </table>
-    </div>
+  <div class="schools-accordion" id="accordionContainer"></div>
 
-    <div class="section-title"><i class="fas fa-chart-line"></i> Class-wise granular view</div>
-    <div class="table-wrapper">
-      <table id="classTable">
-        <thead><tr><th>Class / Section</th><th style="text-align:right">Male</th><th style="text-align:right">Female</th><th style="text-align:right">Total</th></tr></thead>
-        <tbody id="classTbody"></tbody>
-      </table>
-    </div>
-
-    <div class="download-wrap">
-      <button class="btn-outline" onclick="exportCSV()"><i class="fas fa-download"></i> Download CSV Report</button>
-    </div>
+  <div class="download-wrap">
+    <button class="btn-outline" onclick="exportCSV()"><i class="fas fa-download"></i> Export CSV Report</button>
   </div>
 </main>
 
 <script>
-// ---------- ORIGINAL LOGIC PRESERVED + UPGRADED FEEL ----------
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQFGaSeUAf7BVkqHbcQg91XXeZbrVi8rATTJ-jxmOC1taoFXYvFa5J-LL6-Q1KR-Pz5AMS7tG8Skn2h/pub?gid=2066596328&single=true&output=csv";
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbynghF5JD8hchaG8FWdd12NqaXXMBA2ZZrR5a16CP-kGVPWkzcZtfPx4ywvqGxql3v-QQ/exec";
 
 let allData = [];
 let filteredResults = [];
 
-// theme handling with icons
-function updateThemeIcons(theme) {
-  const moonIcon = document.querySelector('.theme-toggle i.fa-moon');
-  const sunIcon = document.querySelector('.theme-toggle i.fa-sun');
-  if(theme === 'dark') {
-    if(moonIcon) moonIcon.style.display = 'inline-flex';
-    if(sunIcon) sunIcon.style.display = 'none';
-  } else {
-    if(moonIcon) moonIcon.style.display = 'none';
-    if(sunIcon) sunIcon.style.display = 'inline-flex';
-  }
-}
-
 function toggleTheme() {
   const root = document.documentElement;
   const current = root.getAttribute('data-theme');
   const newTheme = current === 'dark' ? 'light' : 'dark';
   root.setAttribute('data-theme', newTheme);
-  localStorage.setItem('theme', newTheme);
-  updateThemeIcons(newTheme);
+  const moonIcon = document.querySelector('.theme-toggle i.fa-moon');
+  const sunIcon = document.querySelector('.theme-toggle i.fa-sun');
+  if(newTheme === 'dark') {
+    moonIcon.style.display = 'inline-flex';
+    sunIcon.style.display = 'none';
+  } else {
+    moonIcon.style.display = 'none';
+    sunIcon.style.display = 'inline-flex';
+  }
 }
 
 async function init() {
@@ -576,61 +495,45 @@ async function init() {
     const response = await fetch(CSV_URL);
     const text = await response.text();
     allData = parseCSV(text);
-    const districts = [...new Set(allData.map(r => r.District).filter(d => d))];
-    populateDropdown('selDistrict', districts);
-    document.getElementById('headerDate').textContent = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
-    // load theme preference
-    const savedTheme = localStorage.getItem('theme');
-    if(savedTheme) {
-      document.documentElement.setAttribute('data-theme', savedTheme);
-      updateThemeIcons(savedTheme);
-    } else {
-      updateThemeIcons('dark');
-    }
-  } catch (e) { alert("Error loading master data: " + e.message); }
+    populateDropdown('selDistrict', [...new Set(allData.map(r => r.District))]);
+    document.getElementById('headerDate').textContent = new Date().toLocaleDateString('en-GB');
+    const theme = document.documentElement.getAttribute('data-theme');
+    const moonIcon = document.querySelector('.theme-toggle i.fa-moon');
+    const sunIcon = document.querySelector('.theme-toggle i.fa-sun');
+    if(theme === 'dark') { moonIcon.style.display = 'inline-flex'; sunIcon.style.display = 'none'; }
+    else { moonIcon.style.display = 'none'; sunIcon.style.display = 'inline-flex'; }
+  } catch (e) { alert("Error loading master data."); }
 }
 
 function parseCSV(text) {
-  const lines = text.split('\n').filter(l => l.trim());
-  if(lines.length < 2) return [];
-  const headers = lines[0].split(',').map(h => h.trim().replace(/^\uFEFF/, ''));
+  const lines = text.split('\n');
+  const headers = lines[0].split(',').map(h => h.trim());
   return lines.slice(1).map(line => {
     const values = line.split(',');
-    let obj = {};
-    headers.forEach((header, idx) => {
-      obj[header] = values[idx] ? values[idx].trim() : '';
-    });
-    return obj;
+    return headers.reduce((obj, header, i) => {
+      obj[header] = values[i] ? values[i].trim() : '';
+      return obj;
+    }, {});
   });
 }
 
 function populateDropdown(id, list) {
   const el = document.getElementById(id);
-  if(!el) return;
-  el.innerHTML = `<option value="">Select ${id.replace('sel','')}</option>` + 
-                 list.filter(v => v).sort().map(item => `<option value="${escapeHtml(item)}">${escapeHtml(item)}</option>`).join('');
+  el.innerHTML = `<option value="">Select ${id.replace('sel','')}</option>` + list.sort().map(item => `<option value="${item}">${item}</option>`).join('');
   el.disabled = false;
 }
 
-function escapeHtml(str) { return str.replace(/[&<>]/g, function(m){if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
-
 document.getElementById('selDistrict').addEventListener('change', (e) => {
-  const district = e.target.value;
-  if(!district) { document.getElementById('selTehsil').innerHTML = '<option>Select District First</option>'; document.getElementById('selTehsil').disabled = true; return; }
-  const tehsils = [...new Set(allData.filter(r => r.District === district).map(r => r.Tehsil).filter(t => t))];
+  const tehsils = [...new Set(allData.filter(r => r.District === e.target.value).map(r => r.Tehsil))];
   populateDropdown('selTehsil', tehsils);
   document.getElementById('selMarkaz').disabled = true;
   document.getElementById('selMarkaz').innerHTML = '<option>Select Tehsil First</option>';
-  document.getElementById('btnFetch').disabled = true;
 });
 
 document.getElementById('selTehsil').addEventListener('change', (e) => {
-  const tehsil = e.target.value;
   const district = document.getElementById('selDistrict').value;
-  if(!tehsil || !district) return;
-  const markazList = [...new Set(allData.filter(r => r.Tehsil === tehsil && r.District === district).map(r => r.Markaz).filter(m => m))];
-  populateDropdown('selMarkaz', markazList);
-  document.getElementById('btnFetch').disabled = true;
+  const markaz = [...new Set(allData.filter(r => r.Tehsil === e.target.value && r.District === district).map(r => r.Markaz))];
+  populateDropdown('selMarkaz', markaz);
 });
 
 document.getElementById('selMarkaz').addEventListener('change', (e) => {
@@ -639,73 +542,123 @@ document.getElementById('selMarkaz').addEventListener('change', (e) => {
 
 async function handleFetch() {
   const markaz = document.getElementById('selMarkaz').value;
-  if(!markaz) return;
   const btn = document.getElementById('btnFetch');
   const pb = document.getElementById('progressBar');
   btn.disabled = true;
-  btn.innerHTML = `<i class="fas fa-spinner fa-pulse"></i> Fetching Live...`;
-  pb.style.width = "70%";
+  btn.innerHTML = `<i class="fas fa-spinner fa-pulse"></i> Fetching...`;
+  pb.style.width = "85%";
   try {
     const response = await fetch(`${SCRIPT_URL}?markaz=${encodeURIComponent(markaz)}`);
     const result = await response.json();
     if (result.status === "success") {
       filteredResults = result.data;
-      renderUI();
+      renderAccordion();
       pb.style.width = "100%";
-      setTimeout(() => pb.style.width = "0%", 600);
+      setTimeout(() => pb.style.width = "0%", 500);
     } else {
-      alert(result.message || "Server responded with error");
+      alert(result.message || "Server Error");
     }
   } catch (e) {
-    alert("Backend Connection Failed. Check network / CORS?");
+    alert("Backend Connection Failed.");
   } finally {
     btn.disabled = false;
     btn.innerHTML = `<i class="fas fa-database"></i> Fetch Live Data`;
   }
 }
 
-function renderUI() {
-  const tbody = document.getElementById('tbody');
-  const classTbodyEl = document.getElementById('classTbody');
-  tbody.innerHTML = '';
-  classTbodyEl.innerHTML = '';
-  
+function renderAccordion() {
+  const container = document.getElementById('accordionContainer');
   let total = 0, male = 0, female = 0;
-
+  
   filteredResults.forEach(r => {
     total += r.total; male += r.male; female += r.female;
-    tbody.innerHTML += `
-      <tr>
-        <td><strong>${escapeHtml(r.name)}</strong></td>
-        <td style="font-family: monospace;">${escapeHtml(r.emis)}</td>
-        <td><span class="badge-level">${escapeHtml(r.level)}</span></td>
-        <td style="text-align:right">${r.male.toLocaleString()}</td>
-        <td style="text-align:right">${r.female.toLocaleString()}</td>
-        <td style="text-align:right; font-weight:700; color:var(--accent2);">${r.total.toLocaleString()}</td>
-      </tr>`;
-
-    // header row for class details
-    classTbodyEl.innerHTML += `
-      <tr class="school-header-row">
-        <td colspan="4"><i class="fas fa-building"></i> ${escapeHtml(r.name)} <span style="opacity:0.5; font-size:0.7rem;">(${escapeHtml(r.emis)})</span></td>
-      </tr>`;
-    r.details.forEach(c => {
-      classTbodyEl.innerHTML += `
-        <tr>
-          <td style="padding-left: 2rem;"><i class="fas fa-book-open"></i> ${escapeHtml(c.className)}</td>
-          <td style="text-align:right">${Number(c.m).toLocaleString()}</td>
-          <td style="text-align:right">${Number(c.f).toLocaleString()}</td>
-          <td style="text-align:right; font-weight:600;">${Number(c.t).toLocaleString()}</td>
-        </tr>`;
-    });
   });
-
-  document.getElementById('valTotal').innerHTML = total.toLocaleString();
-  document.getElementById('valMale').innerHTML = male.toLocaleString();
-  document.getElementById('valFemale').innerHTML = female.toLocaleString();
   
+  document.getElementById('valTotal').textContent = total.toLocaleString();
+  document.getElementById('valMale').textContent = male.toLocaleString();
+  document.getElementById('valFemale').textContent = female.toLocaleString();
   document.querySelectorAll('.card').forEach(c => c.classList.add('visible'));
-  document.getElementById('tablesContainer').classList.add('visible');
+  
+  let html = `
+    <div class="accordion-controls">
+      <button class="accordion-btn" onclick="expandAll()"><i class="fas fa-expand-alt"></i> Expand All</button>
+      <button class="accordion-btn" onclick="collapseAll()"><i class="fas fa-compress-alt"></i> Collapse All</button>
+    </div>
+  `;
+  
+  filteredResults.forEach((school, idx) => {
+    let classesHtml = '';
+    school.details.forEach(c => {
+      classesHtml += `
+        <div class="class-row">
+          <span class="class-name"><i class="fas fa-book"></i> ${c.className}</span>
+          <div class="class-numbers">
+            <span class="class-male"><i class="fas fa-mars"></i> ${Number(c.m).toLocaleString()}</span>
+            <span class="class-female"><i class="fas fa-venus"></i> ${Number(c.f).toLocaleString()}</span>
+            <span class="class-total"><i class="fas fa-users"></i> ${Number(c.t).toLocaleString()}</span>
+          </div>
+        </div>
+      `;
+    });
+    
+    html += `
+      <div class="school-card" id="school-${idx}">
+        <div class="school-header" onclick="toggleSchool(${idx})">
+          <div class="school-icon"><i class="fas fa-school"></i></div>
+          <div class="school-info">
+            <div class="school-name">
+              ${escapeHtml(school.name)}
+              <span class="badge">${escapeHtml(school.level)}</span>
+            </div>
+            <div class="school-meta">
+              <span><i class="fas fa-id-card"></i> EMIS: ${school.emis}</span>
+              <span class="school-stats">
+                <span><i class="fas fa-mars" style="color:var(--accent)"></i> ${school.male.toLocaleString()}</span>
+                <span><i class="fas fa-venus" style="color:var(--pink)"></i> ${school.female.toLocaleString()}</span>
+                <span><i class="fas fa-users" style="color:var(--accent2)"></i> ${school.total.toLocaleString()}</span>
+              </span>
+            </div>
+          </div>
+          <div class="expand-icon"><i class="fas fa-chevron-down"></i></div>
+        </div>
+        <div class="school-details">
+          <div class="class-table">
+            ${classesHtml || '<div style="padding: 16px; text-align: center; color: var(--text-muted);"><i class="fas fa-info-circle"></i> No class data available</div>'}
+          </div>
+        </div>
+      </div>
+    `;
+  });
+  
+  container.innerHTML = html;
+}
+
+function toggleSchool(idx) {
+  const card = document.getElementById(`school-${idx}`);
+  card.classList.toggle('expanded');
+}
+
+function expandAll() {
+  filteredResults.forEach((_, idx) => {
+    const card = document.getElementById(`school-${idx}`);
+    if(card) card.classList.add('expanded');
+  });
+}
+
+function collapseAll() {
+  filteredResults.forEach((_, idx) => {
+    const card = document.getElementById(`school-${idx}`);
+    if(card) card.classList.remove('expanded');
+  });
+}
+
+function escapeHtml(str) {
+  return String(str).replace(/[&<>]/g, function(m) {
+    if(m === '&') return '&amp;';
+    if(m === '<') return '&lt;';
+    if(m === '>') return '&gt;';
+    return m;
+  });
 }
 
 function exportCSV() {
@@ -727,8 +680,6 @@ function exportCSV() {
   window.URL.revokeObjectURL(url);
 }
 
-// attach theme toggle listener after DOM ready
-document.getElementById('themeToggleBtn').addEventListener('click', toggleTheme);
 init();
 </script>
 </body>
