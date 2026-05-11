@@ -1,199 +1,267 @@
+```html
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>PESRP Markaz Enrollment Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<title>PESRP • Markaz Enrollment</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap');
+  
   :root[data-theme="dark"] {
-    --bg: #0d1117; --surface: #161b22; --surface2: #1c2330; --border: #30363d;
-    --accent: #58a6ff; --accent2: #3fb950; --pink: #f472b6; --text: #e6edf3; --muted: #7d8590;
+    --bg: #0a0f1c;
+    --surface: #121a2a;
+    --surface2: #1a2338;
+    --border: #2a3348;
+    --accent: #00d4ff;
+    --accent2: #22ff88;
+    --pink: #ff2e9a;
+    --text: #e0f2fe;
+    --muted: #94a3b8;
   }
+  
   :root[data-theme="light"] {
-    --bg: #f6f8fa; --surface: #ffffff; --surface2: #f3f4f6; --border: #d0d7de;
-    --accent: #0969da; --accent2: #1a7f37; --pink: #d03592; --text: #1f2328; --muted: #656d76;
+    --bg: #f8fafc;
+    --surface: #ffffff;
+    --surface2: #f1f5f9;
+    --border: #e2e8f0;
+    --accent: #0891b2;
+    --accent2: #16a34a;
+    --pink: #db2777;
+    --text: #0f172a;
+    --muted: #64748b;
   }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: 'IBM Plex Sans', sans-serif; transition: background 0.3s; font-size: 14px; line-height: 1.5; }
+  * { transition-property: color, background-color, border-color, text-decoration-color, fill, stroke; }
   
-  header {
-    background: var(--surface); border-bottom: 1px solid var(--border);
-    padding: 16px 24px; display: flex; align-items: center; gap: 16px;
-    position: sticky; top: 0; z-index: 100; backdrop-filter: blur(8px);
-  }
-  .logo-mark { width: 36px; height: 36px; background: var(--accent2); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 600; color: #fff; }
-  .header-date { margin-left: auto; font-family: 'IBM Plex Mono'; font-size: 12px; color: var(--accent2); padding: 4px 10px; border-radius: 4px; border: 1px solid var(--border); }
-  
-  main { max-width: 1400px; margin: 0 auto; padding: 24px; }
-
-  /* FILTERS */
-  .filter-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 24px; }
-  .filter-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; }
-  .filter-group { display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 200px; }
-  select { 
-    background: var(--surface2); border: 1px solid var(--border); color: var(--text); 
-    padding: 10px; border-radius: 6px; cursor: pointer; outline: none; appearance: none;
-  }
-
-  .btn-fetch {
-    background: var(--accent2); color: white; border: none; padding: 10px 24px;
-    border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s;
-    display: flex; align-items: center; gap: 8px; justify-content: center;
-  }
-  .btn-fetch:disabled { opacity: 0.6; cursor: not-allowed; }
-
-  /* CARDS */
-  .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 24px; }
-  .card { 
-    background: var(--surface); border: 1px solid var(--border); border-radius: 10px; 
-    padding: 24px; display: none; position: relative; overflow: hidden;
-  }
-  .card.visible { display: block; }
-  .card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--accent-color, var(--accent2)); }
-  .card-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
-  .card-value { font-size: 32px; font-family: 'IBM Plex Mono'; font-weight: 600; }
-
-  /* TABLE WRAPPER & SCROLL */
-  .tables-container { display: none; }
-  .tables-container.visible { display: block; }
-  .table-wrapper { 
-    background: var(--surface); border: 1px solid var(--border); border-radius: 10px; 
-    overflow-x: auto; margin-bottom: 32px; -webkit-overflow-scrolling: touch;
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', system_ui, sans-serif;
   }
   
-  table { width: 100%; border-collapse: collapse; text-align: left; min-width: 600px; }
-  th { 
-    background: var(--surface2); padding: 14px; font-size: 11px; color: var(--muted); 
-    text-transform: uppercase; border-bottom: 1px solid var(--border);
-    position: sticky; top: 0; z-index: 10;
-  }
-  td { padding: 12px 14px; border-bottom: 1px solid var(--border); }
+  .title-font { font-family: 'Space Grotesk', sans-serif; }
   
-  /* Grouped School Header */
-  .school-header-row { background: var(--surface2); }
-  .school-header-row td { 
-    font-weight: 600; color: var(--accent); font-size: 13px; 
-    border-bottom: 2px solid var(--border); padding: 16px 14px;
-    position: sticky; top: 40px; z-index: 9;
+  .glass {
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(20px);
+  }
+  
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  }
+  
+  .stat-value {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 2.75rem;
+    line-height: 1;
+    font-weight: 700;
+  }
+  
+  .nav-link {
+    position: relative;
+  }
+  
+  .nav-link:after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -2px;
+    left: 0;
+    background: var(--accent);
+    transition: all 0.3s ease;
+  }
+  
+  .nav-link:hover:after {
+    width: 100%;
   }
 
-  /* LOADING STATE */
-  .skeleton { height: 20px; background: var(--surface2); border-radius: 4px; position: relative; overflow: hidden; }
-  .skeleton::after {
-    content: ""; position: absolute; top: 0; right: 0; bottom: 0; left: 0;
-    transform: translateX(-100%);
-    background-image: linear-gradient(90deg, rgba(255,255,255,0) 0, rgba(255,255,255,0.05) 20%, rgba(255,255,255,0.1) 60%, rgba(255,255,255,0));
-    animation: shimmer 2s infinite;
+  table {
+    border-collapse: collapse;
   }
-  @keyframes shimmer { 100% { transform: translateX(100%); } }
+  
+  th {
+    background: var(--surface2);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
 
-  .progress-bar { height: 3px; background: var(--accent2); width: 0%; transition: width 0.4s ease; position: fixed; top: 0; left: 0; z-index: 1000; }
-  .theme-toggle { cursor: pointer; padding: 8px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface2); color: var(--text); }
+  .school-row {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .school-row:hover {
+    background: var(--surface2);
+    transform: scale(1.01);
+  }
 
-  @media (max-width: 600px) {
-    main { padding: 16px; }
-    .card-value { font-size: 24px; }
-    .table-wrapper::after { content: 'Scroll →'; position: absolute; right: 10px; bottom: 10px; font-size: 10px; color: var(--muted); pointer-events: none; }
+  .progress-bar {
+    height: 3px;
+    background: linear-gradient(to right, var(--accent), var(--accent2));
+  }
+
+  .dropdown-option {
+    padding: 12px 16px;
   }
 </style>
 </head>
-<body>
+<body class="min-h-screen pb-12">
 
-<div class="progress-bar" id="progressBar"></div>
+<div id="progressBar" class="progress-bar fixed top-0 left-0 w-0 z-50"></div>
 
-<header>
-  <div class="logo-mark">EN</div>
-  <div>
-    <div style="font-weight:600">PESRP Enrollment Engine</div>
-    <div style="font-size:12px; color:var(--muted)">Live Markaz-wise Data</div>
+<!-- HEADER -->
+<header class="sticky top-0 z-50 border-b border-[var(--border)] bg-[var(--surface)]">
+  <div class="max-w-screen-2xl mx-auto px-6 py-5 flex items-center justify-between">
+    <div class="flex items-center gap-x-4">
+      <div class="w-11 h-11 bg-gradient-to-br from-cyan-400 to-emerald-500 rounded-2xl flex items-center justify-center text-white font-bold text-2xl shadow-lg">📊</div>
+      <div>
+        <h1 class="title-font text-2xl font-semibold tracking-tighter">PESRP Markaz</h1>
+        <p class="text-xs text-[var(--muted)] -mt-1">Live Enrollment Engine</p>
+      </div>
+    </div>
+    
+    <div class="flex items-center gap-x-6">
+      <div id="headerDate" class="text-sm font-medium px-4 py-2 rounded-3xl bg-[var(--surface2)] border border-[var(--border)] flex items-center gap-x-2"></div>
+      
+      <button onclick="toggleTheme()" 
+              class="w-10 h-10 flex items-center justify-center text-2xl hover:scale-110 active:scale-95 rounded-2xl border border-[var(--border)] hover:bg-[var(--surface2)]">
+        🌓
+      </button>
+    </div>
   </div>
-  <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
-  <div class="header-date" id="headerDate">--</div>
 </header>
 
-<main>
-  <div class="filter-panel">
-    <div class="filter-row">
-      <div class="filter-group">
-        <label>District</label>
-        <select id="selDistrict"><option>Loading Districts...</option></select>
+<main class="max-w-screen-2xl mx-auto px-6 pt-8">
+  
+  <!-- FILTERS -->
+  <div class="glass card rounded-3xl p-8 mb-10">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div>
+        <label class="block text-xs font-medium tracking-widest text-[var(--muted)] mb-2">DISTRICT</label>
+        <select id="selDistrict" 
+                class="w-full bg-[var(--surface2)] border border-[var(--border)] rounded-2xl px-5 py-4 text-base focus:outline-none focus:border-[var(--accent)] appearance-none">
+        </select>
       </div>
-      <div class="filter-group">
-        <label>Tehsil</label>
-        <select id="selTehsil" disabled><option>Select District First</option></select>
+      
+      <div>
+        <label class="block text-xs font-medium tracking-widest text-[var(--muted)] mb-2">TEHSIL</label>
+        <select id="selTehsil" disabled
+                class="w-full bg-[var(--surface2)] border border-[var(--border)] rounded-2xl px-5 py-4 text-base focus:outline-none focus:border-[var(--accent)] appearance-none">
+        </select>
       </div>
-      <div class="filter-group">
-        <label>Markaz</label>
-        <select id="selMarkaz" disabled><option>Select Tehsil First</option></select>
+      
+      <div>
+        <label class="block text-xs font-medium tracking-widest text-[var(--muted)] mb-2">MARKAZ</label>
+        <select id="selMarkaz" disabled
+                class="w-full bg-[var(--surface2)] border border-[var(--border)] rounded-2xl px-5 py-4 text-base focus:outline-none focus:border-[var(--accent)] appearance-none">
+        </select>
       </div>
-      <div style="flex: 0;">
-        <button class="btn-fetch" id="btnFetch" disabled onclick="handleFetch()">Fetch Live Data</button>
+      
+      <div class="flex items-end">
+        <button onclick="handleFetch()" id="btnFetch"
+                class="w-full bg-gradient-to-r from-cyan-500 to-emerald-500 hover:from-cyan-600 hover:to-emerald-600 text-white font-semibold py-4 px-8 rounded-3xl flex items-center justify-center gap-x-3 shadow-lg shadow-cyan-500/30 active:scale-[0.97]">
+          <i class="fa-solid fa-bolt"></i>
+          <span id="btnText">Fetch Live Data</span>
+        </button>
       </div>
     </div>
   </div>
 
-  <div class="cards-grid">
-    <div class="card" id="cardTotal" style="--accent-color: var(--accent2)">
-      <div class="card-label">Total Enrollment</div>
-      <div class="card-value" style="color:var(--accent2)" id="valTotal">0</div>
+  <!-- SUMMARY CARDS -->
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12" id="cardsContainer">
+    <!-- Populated by JS -->
+  </div>
+
+  <!-- CHARTS -->
+  <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 mb-12">
+    <div class="lg:col-span-3 card rounded-3xl p-7">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="font-semibold text-lg">Gender Distribution</h3>
+        <div class="text-xs px-4 py-2 rounded-3xl bg-[var(--surface2)]" id="genderPercent"></div>
+      </div>
+      <canvas id="genderChart" class="h-72"></canvas>
     </div>
-    <div class="card" id="cardMale" style="--accent-color: var(--accent)">
-      <div class="card-label">Male</div>
-      <div class="card-value" style="color:var(--accent)" id="valMale">0</div>
-    </div>
-    <div class="card" id="cardFemale" style="--accent-color: var(--pink)">
-      <div class="card-label">Female</div>
-      <div class="card-value" style="color:var(--pink)" id="valFemale">0</div>
+    
+    <div class="lg:col-span-2 card rounded-3xl p-7">
+      <h3 class="font-semibold text-lg mb-6">Top Schools by Enrollment</h3>
+      <canvas id="topSchoolsChart" class="h-72"></canvas>
     </div>
   </div>
 
-  <div class="tables-container" id="tablesContainer">
-    <h3 style="margin-bottom: 12px; font-weight: 500;">School Summary</h3>
-    <div class="table-wrapper">
-      <table id="mainTable">
-        <thead>
-          <tr>
-            <th>School Name</th>
-            <th>EMIS</th>
-            <th>Level</th>
-            <th style="text-align:right">Male</th>
-            <th style="text-align:right">Female</th>
-            <th style="text-align:right">Total</th>
-          </tr>
-        </thead>
-        <tbody id="tbody"></tbody>
-      </table>
+  <!-- TABLES -->
+  <div id="tablesContainer" class="hidden">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="title-font text-3xl font-semibold tracking-tighter">School Overview</h2>
+      
+      <div class="relative w-80">
+        <input id="searchInput" 
+               onkeyup="filterTable()"
+               type="text" 
+               placeholder="Search schools..." 
+               class="w-full bg-[var(--surface2)] border border-[var(--border)] rounded-3xl py-4 pl-12 pr-6 focus:outline-none focus:border-[var(--accent)]">
+        <i class="fa-solid fa-magnifying-glass absolute left-5 top-1/2 -translate-y-1/2 text-[var(--muted)]"></i>
+      </div>
     </div>
 
-    <h3 style="margin: 32px 0 12px; font-weight: 500;">Class-wise Detailed Breakdown</h3>
-    <div class="table-wrapper">
-      <table id="classTable">
-        <thead>
-          <tr>
-            <th>Class Level</th>
-            <th style="text-align:right">Male</th>
-            <th style="text-align:right">Female</th>
-            <th style="text-align:right">Total</th>
-          </tr>
-        </thead>
-        <tbody id="classTbody"></tbody>
-      </table>
+    <!-- Main Table -->
+    <div class="card rounded-3xl overflow-hidden mb-12">
+      <div class="overflow-x-auto">
+        <table class="w-full min-w-[800px]">
+          <thead>
+            <tr class="border-b border-[var(--border)]">
+              <th class="text-left py-6 px-8 font-medium text-sm text-[var(--muted)]">School</th>
+              <th class="text-left py-6 px-8 font-medium text-sm text-[var(--muted)]">EMIS</th>
+              <th class="text-left py-6 px-8 font-medium text-sm text-[var(--muted)]">Level</th>
+              <th class="text-right py-6 px-8 font-medium text-sm text-[var(--muted)]">Boys</th>
+              <th class="text-right py-6 px-8 font-medium text-sm text-[var(--muted)]">Girls</th>
+              <th class="text-right py-6 px-8 font-medium text-sm text-[var(--muted)]">Total</th>
+            </tr>
+          </thead>
+          <tbody id="tbody" class="text-sm"></tbody>
+        </table>
+      </div>
     </div>
 
-    <div style="display: flex; justify-content: flex-end; margin-top: 24px;">
-        <button class="btn-fetch" style="background:var(--accent)" onclick="exportCSV()">Download CSV Report</button>
+    <!-- Class-wise -->
+    <h2 class="title-font text-3xl font-semibold tracking-tighter mb-6">Class-wise Breakdown</h2>
+    <div class="card rounded-3xl overflow-hidden">
+      <div id="classDetails" class="divide-y divide-[var(--border)]"></div>
+    </div>
+
+    <div class="flex justify-end mt-10">
+      <button onclick="exportCSV()" 
+              class="flex items-center gap-x-3 bg-white text-black dark:bg-zinc-900 dark:text-white font-medium px-8 py-4 rounded-3xl hover:shadow-xl">
+        <i class="fa-solid fa-download"></i>
+        <span>Download Full Report (CSV)</span>
+      </button>
     </div>
   </div>
 </main>
 
+<footer class="text-center text-[var(--muted)] text-xs py-8">
+  PESRP Enrollment Dashboard • Real-time • <span id="lastUpdated"></span>
+</footer>
+
 <script>
+// Same data URLs
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQFGaSeUAf7BVkqHbcQg91XXeZbrVi8rATTJ-jxmOC1taoFXYvFa5J-LL6-Q1KR-Pz5AMS7tG8Skn2h/pub?gid=2066596328&single=true&output=csv";
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbynghF5JD8hchaG8FWdd12NqaXXMBA2ZZrR5a16CP-kGVPWkzcZtfPx4ywvqGxql3v-QQ/exec";
 
 let allData = [];
 let filteredResults = [];
+let genderChartInstance = null;
+let topSchoolsChartInstance = null;
+
+// Tailwind script already included via CDN
 
 function toggleTheme() {
   const root = document.documentElement;
@@ -206,18 +274,22 @@ async function init() {
     const response = await fetch(CSV_URL);
     const text = await response.text();
     allData = parseCSV(text);
+    
     populateDropdown('selDistrict', [...new Set(allData.map(r => r.District))]);
-    document.getElementById('headerDate').textContent = new Date().toLocaleDateString('en-GB');
-  } catch (e) { alert("Error loading master data."); }
+    updateHeaderDate();
+  } catch (e) {
+    console.error(e);
+    alert("Failed to load master data");
+  }
 }
 
 function parseCSV(text) {
   const lines = text.split('\n');
   const headers = lines[0].split(',').map(h => h.trim());
   return lines.slice(1).map(line => {
-    const values = line.split(',');
+    const values = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
     return headers.reduce((obj, header, i) => {
-      obj[header] = values[i] ? values[i].trim() : '';
+      obj[header] = values[i] ? values[i].replace(/^"|"$/g, '').trim() : '';
       return obj;
     }, {});
   });
@@ -234,114 +306,279 @@ document.getElementById('selDistrict').addEventListener('change', (e) => {
   const tehsils = [...new Set(allData.filter(r => r.District === e.target.value).map(r => r.Tehsil))];
   populateDropdown('selTehsil', tehsils);
   document.getElementById('selMarkaz').disabled = true;
+  document.getElementById('selMarkaz').innerHTML = '<option value="">Select Tehsil First</option>';
 });
 
 document.getElementById('selTehsil').addEventListener('change', (e) => {
-  const markaz = [...new Set(allData.filter(r => r.Tehsil === e.target.value).map(r => r.Markaz))];
-  populateDropdown('selMarkaz', markaz);
+  const markazs = [...new Set(allData.filter(r => r.Tehsil === e.target.value).map(r => r.Markaz))];
+  populateDropdown('selMarkaz', markazs);
 });
 
 document.getElementById('selMarkaz').addEventListener('change', (e) => {
   document.getElementById('btnFetch').disabled = !e.target.value;
 });
 
+function updateHeaderDate() {
+  const dateEl = document.getElementById('headerDate');
+  const now = new Date();
+  dateEl.innerHTML = `
+    <i class="fa-solid fa-calendar text-emerald-400"></i>
+    ${now.toLocaleDateString('en-GB', {weekday:'short', day:'numeric', month:'short'})}
+  `;
+  document.getElementById('lastUpdated').textContent = now.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
+}
+
 async function handleFetch() {
   const markaz = document.getElementById('selMarkaz').value;
+  if (!markaz) return;
+  
   const btn = document.getElementById('btnFetch');
   const pb = document.getElementById('progressBar');
+  const originalText = btn.innerHTML;
   
   btn.disabled = true;
-  btn.innerHTML = `<span>Fetching...</span>`;
-  pb.style.width = "85%"; // Smoother jump
-
+  btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i><span class="ml-2">Fetching live...</span>`;
+  pb.style.width = "70%";
+  
   try {
     const response = await fetch(`${SCRIPT_URL}?markaz=${encodeURIComponent(markaz)}`);
     const result = await response.json();
-
+    
     if (result.status === "success") {
       filteredResults = result.data;
-      renderUI();
       pb.style.width = "100%";
-      setTimeout(() => pb.style.width = "0%", 500);
+      renderUI();
+      
+      setTimeout(() => {
+        pb.style.width = "0%";
+      }, 800);
     } else {
-      alert(result.message || "Server Error");
+      alert(result.message || "Failed to fetch data");
     }
   } catch (e) {
-    alert("Backend Connection Failed.");
+    alert("Connection error. Please check your internet.");
   } finally {
     btn.disabled = false;
-    btn.textContent = "Fetch Live Data";
+    btn.innerHTML = originalText;
   }
 }
 
-function renderUI() {
-  const tbody = document.getElementById('tbody');
-  const classTbody = document.getElementById('classTbody');
-  tbody.innerHTML = '';
-  classTbody.innerHTML = '';
+function renderCards() {
+  const container = document.getElementById('cardsContainer');
+  container.innerHTML = '';
   
   let total = 0, male = 0, female = 0;
-
-  filteredResults.forEach(r => {
-    total += r.total; male += r.male; female += r.female;
-    
-    // Main Summary Table
-    tbody.innerHTML += `
-      <tr>
-        <td><div style="font-weight:600">${r.name}</div></td>
-        <td style="font-family:monospace; font-size:12px">${r.emis}</td>
-        <td><span style="font-size:10px; background:var(--surface2); padding:2px 6px; border-radius:4px">${r.level}</span></td>
-        <td style="text-align:right">${r.male.toLocaleString()}</td>
-        <td style="text-align:right">${r.female.toLocaleString()}</td>
-        <td style="text-align:right; font-weight:600; color:var(--accent2)">${r.total.toLocaleString()}</td>
-      </tr>`;
-
-    // Grouped Class Detail Table
-    classTbody.innerHTML += `
-      <tr class="school-header-row">
-        <td colspan="4">${r.name} <span style="opacity:0.6; font-weight:400; font-family:monospace; margin-left:8px;">(${r.emis})</span></td>
-      </tr>`;
-
-    r.details.forEach(c => {
-      classTbody.innerHTML += `
-        <tr>
-          <td style="padding-left:30px; color:var(--muted)">${c.className}</td>
-          <td style="text-align:right">${c.m}</td>
-          <td style="text-align:right">${c.f}</td>
-          <td style="text-align:right; font-weight:500">${c.t}</td>
-        </tr>`;
-    });
-  });
-
-  document.getElementById('valTotal').textContent = total.toLocaleString();
-  document.getElementById('valMale').textContent = male.toLocaleString();
-  document.getElementById('valFemale').textContent = female.toLocaleString();
   
-  document.querySelectorAll('.card').forEach(c => c.classList.add('visible'));
-  document.getElementById('tablesContainer').classList.add('visible');
+  filteredResults.forEach(r => {
+    total += r.total || 0;
+    male += r.male || 0;
+    female += r.female || 0;
+  });
+  
+  const cardsHTML = `
+    <div class="card rounded-3xl p-8">
+      <div class="flex justify-between">
+        <div>
+          <p class="text-xs tracking-widest text-emerald-400 font-medium">TOTAL STUDENTS</p>
+          <p class="stat-value text-white mt-3" id="valTotal">${total.toLocaleString()}</p>
+        </div>
+        <div class="text-5xl opacity-20">👥</div>
+      </div>
+    </div>
+    
+    <div class="card rounded-3xl p-8 border-l-4 border-cyan-400">
+      <div class="flex justify-between">
+        <div>
+          <p class="text-xs tracking-widest text-cyan-400 font-medium">BOYS</p>
+          <p class="stat-value text-cyan-300 mt-3" id="valMale">${male.toLocaleString()}</p>
+        </div>
+        <div class="text-5xl opacity-20">👦</div>
+      </div>
+    </div>
+    
+    <div class="card rounded-3xl p-8 border-l-4 border-pink-500">
+      <div class="flex justify-between">
+        <div>
+          <p class="text-xs tracking-widest text-pink-400 font-medium">GIRLS</p>
+          <p class="stat-value text-pink-300 mt-3" id="valFemale">${female.toLocaleString()}</p>
+        </div>
+        <div class="text-5xl opacity-20">👧</div>
+      </div>
+    </div>
+  `;
+  
+  container.innerHTML = cardsHTML;
+}
+
+function createGenderChart() {
+  const ctx = document.getElementById('genderChart');
+  if (genderChartInstance) genderChartInstance.destroy();
+  
+  let totalMale = 0, totalFemale = 0;
+  filteredResults.forEach(r => {
+    totalMale += r.male || 0;
+    totalFemale += r.female || 0;
+  });
+  
+  const total = totalMale + totalFemale;
+  document.getElementById('genderPercent').textContent = 
+    `${Math.round(totalFemale/total*100)}% Girls • ${Math.round(totalMale/total*100)}% Boys`;
+  
+  genderChartInstance = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Boys', 'Girls'],
+      datasets: [{
+        data: [totalMale, totalFemale],
+        backgroundColor: ['#22d3ee', '#f472b6'],
+        borderColor: '#121a2a',
+        borderWidth: 6,
+        hoverOffset: 20
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { color: 'var(--text)', padding: 25, font: {size: 15} } },
+        tooltip: { backgroundColor: '#1e2937', titleColor: '#e0f2fe' }
+      },
+      cutout: "72%"
+    }
+  });
+}
+
+function createTopSchoolsChart() {
+  const ctx = document.getElementById('topSchoolsChart');
+  if (topSchoolsChartInstance) topSchoolsChartInstance.destroy();
+  
+  const sorted = [...filteredResults]
+    .sort((a,b) => (b.total||0) - (a.total||0))
+    .slice(0, 5);
+  
+  topSchoolsChartInstance = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: sorted.map(s => s.name.length > 18 ? s.name.substring(0,18)+'...' : s.name),
+      datasets: [{
+        label: 'Enrollment',
+        data: sorted.map(s => s.total || 0),
+        backgroundColor: '#22ff88',
+        borderRadius: 12,
+        barThickness: 28
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
+        x: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } }
+      }
+    }
+  });
+}
+
+function renderTables() {
+  const tbody = document.getElementById('tbody');
+  tbody.innerHTML = '';
+  
+  filteredResults.forEach(school => {
+    const row = document.createElement('tr');
+    row.className = "school-row border-b border-[var(--border)] last:border-none hover:bg-[var(--surface2)]";
+    row.innerHTML = `
+      <td class="py-6 px-8 font-medium">${school.name}</td>
+      <td class="py-6 px-8 font-mono text-xs text-[var(--muted)]">${school.emis}</td>
+      <td class="py-6 px-8">
+        <span class="inline-block px-4 py-1 text-xs rounded-3xl bg-[var(--surface2)]">${school.level}</span>
+      </td>
+      <td class="py-6 px-8 text-right font-medium text-cyan-300">${school.male.toLocaleString()}</td>
+      <td class="py-6 px-8 text-right font-medium text-pink-400">${school.female.toLocaleString()}</td>
+      <td class="py-6 px-8 text-right font-bold text-emerald-400">${school.total.toLocaleString()}</td>
+    `;
+    tbody.appendChild(row);
+  });
+}
+
+function renderClassDetails() {
+  const container = document.getElementById('classDetails');
+  container.innerHTML = '';
+  
+  filteredResults.forEach(school => {
+    let html = `
+      <div class="p-8 border-b border-[var(--border)] last:border-none">
+        <div class="flex items-center gap-x-4 mb-6">
+          <div class="font-semibold text-lg">${school.name}</div>
+          <div class="text-xs font-mono bg-[var(--surface2)] px-3 py-1 rounded-2xl">${school.emis}</div>
+        </div>
+        
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 text-sm">`;
+    
+    school.details.forEach(cls => {
+      html += `
+        <div class="bg-[var(--surface2)] rounded-2xl p-5">
+          <div class="text-xs text-[var(--muted)]">${cls.className}</div>
+          <div class="flex justify-between mt-3">
+            <div>
+              <span class="text-cyan-300">${cls.m}</span>
+              <span class="text-xs text-[var(--muted)] ml-1">boys</span>
+            </div>
+            <div>
+              <span class="text-pink-400">${cls.f}</span>
+              <span class="text-xs text-[var(--muted)] ml-1">girls</span>
+            </div>
+            <div class="font-semibold">${cls.t}</div>
+          </div>
+        </div>`;
+    });
+    
+    html += `</div></div>`;
+    container.innerHTML += html;
+  });
+}
+
+function renderUI() {
+  document.getElementById('tablesContainer').classList.remove('hidden');
+  
+  renderCards();
+  renderTables();
+  renderClassDetails();
+  createGenderChart();
+  createTopSchoolsChart();
+}
+
+function filterTable() {
+  const term = document.getElementById('searchInput').value.toLowerCase().trim();
+  const rows = document.querySelectorAll('#tbody tr');
+  
+  rows.forEach(row => {
+    const schoolName = row.cells[0].textContent.toLowerCase();
+    row.style.display = schoolName.includes(term) ? '' : 'none';
+  });
 }
 
 function exportCSV() {
-  const markaz = document.getElementById('selMarkaz').value;
+  const markaz = document.getElementById('selMarkaz').value || "Markaz";
   const timestamp = new Date().toISOString().slice(0, 10);
+  
   let csv = "School Name,EMIS,Level,Class,Male,Female,Total\n";
   
   filteredResults.forEach(r => {
     r.details.forEach(c => {
-      csv += `"${r.name}",${r.emis},${r.level},"${c.className}",${c.m},${c.f},${c.t}\n`;
+      csv += `"${r.name.replace(/"/g, '""')}",${r.emis},"${r.level}","${c.className}",${c.m},${c.f},${c.t}\n`;
     });
   });
-
+  
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-  const url = window.URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `Enrollment_${markaz}_${timestamp}.csv`;
-  a.click();
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = `PESRP_${markaz}_${timestamp}.csv`;
+  link.click();
 }
 
+// Initialize
 init();
 </script>
-
 </body>
 </html>
