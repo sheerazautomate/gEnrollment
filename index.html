@@ -1,27 +1,25 @@
-```html
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 <title>PESRP • Markaz Enrollment</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet"/>
-<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
 
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
   
   :root[data-theme="dark"] {
     --bg: #0a0f1c;
-    --surface: #121a2a;
-    --surface2: #1a2338;
-    --border: #2a3348;
-    --accent: #00d4ff;
-    --accent2: #22ff88;
-    --pink: #ff2e9a;
-    --text: #e0f2fe;
+    --surface: #111827;
+    --surface2: #1f2937;
+    --border: #334155;
+    --accent: #22d3ee;
+    --accent2: #4ade80;
+    --pink: #f472b6;
+    --text: #f1f5f9;
     --muted: #94a3b8;
   }
   
@@ -37,8 +35,6 @@
     --muted: #64748b;
   }
 
-  * { transition-property: color, background-color, border-color, text-decoration-color, fill, stroke; }
-  
   body {
     background: var(--bg);
     color: var(--text);
@@ -46,129 +42,95 @@
   }
   
   .title-font { font-family: 'Space Grotesk', sans-serif; }
-  
+
   .glass {
-    background: rgba(255,255,255,0.06);
-    backdrop-filter: blur(20px);
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+  }
+
+  .stat-card {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
   
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
-  }
-  
-  .stat-value {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 2.75rem;
-    line-height: 1;
-    font-weight: 700;
-  }
-  
-  .nav-link {
-    position: relative;
-  }
-  
-  .nav-link:after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 2px;
-    bottom: -2px;
-    left: 0;
-    background: var(--accent);
-    transition: all 0.3s ease;
-  }
-  
-  .nav-link:hover:after {
-    width: 100%;
+  .stat-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.4);
   }
 
   table {
     border-collapse: collapse;
   }
   
-  th {
-    background: var(--surface2);
-    position: sticky;
-    top: 0;
-    z-index: 10;
-  }
-
-  .school-row {
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  th, td {
+    transition: background-color 0.2s;
   }
   
-  .school-row:hover {
-    background: var(--surface2);
-    transform: scale(1.01);
+  tr:hover {
+    background: var(--surface2) !important;
   }
 
-  .progress-bar {
-    height: 3px;
-    background: linear-gradient(to right, var(--accent), var(--accent2));
+  .mobile-table-card {
+    transition: all 0.3s ease;
   }
 
-  .dropdown-option {
-    padding: 12px 16px;
+  .btn-primary {
+    background: linear-gradient(90deg, #22d3ee, #4ade80);
+    transition: all 0.3s ease;
+  }
+  
+  .btn-primary:active {
+    transform: scale(0.95);
   }
 </style>
 </head>
-<body class="min-h-screen pb-12">
+<body class="min-h-screen pb-16">
 
-<div id="progressBar" class="progress-bar fixed top-0 left-0 w-0 z-50"></div>
+<div id="progressBar" class="h-1 bg-gradient-to-r from-cyan-400 to-emerald-400 fixed top-0 left-0 z-50 transition-all duration-500" style="width:0%"></div>
 
 <!-- HEADER -->
-<header class="sticky top-0 z-50 border-b border-[var(--border)] bg-[var(--surface)]">
-  <div class="max-w-screen-2xl mx-auto px-6 py-5 flex items-center justify-between">
-    <div class="flex items-center gap-x-4">
-      <div class="w-11 h-11 bg-gradient-to-br from-cyan-400 to-emerald-500 rounded-2xl flex items-center justify-center text-white font-bold text-2xl shadow-lg">📊</div>
+<header class="sticky top-0 z-50 bg-[var(--surface)] border-b border-[var(--border)]">
+  <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
+    <div class="flex items-center gap-4">
+      <div class="w-12 h-12 bg-gradient-to-br from-cyan-400 via-emerald-400 to-teal-500 rounded-3xl flex items-center justify-center text-3xl shadow-xl shadow-cyan-500/30">
+        📊
+      </div>
       <div>
-        <h1 class="title-font text-2xl font-semibold tracking-tighter">PESRP Markaz</h1>
-        <p class="text-xs text-[var(--muted)] -mt-1">Live Enrollment Engine</p>
+        <h1 class="title-font text-3xl font-bold tracking-tighter">PESRP</h1>
+        <p class="text-sm text-[var(--muted)] -mt-1">Markaz Enrollment Engine</p>
       </div>
     </div>
     
-    <div class="flex items-center gap-x-6">
-      <div id="headerDate" class="text-sm font-medium px-4 py-2 rounded-3xl bg-[var(--surface2)] border border-[var(--border)] flex items-center gap-x-2"></div>
-      
+    <div class="flex items-center gap-4">
+      <div id="headerDate" class="text-sm font-medium px-5 py-2.5 rounded-3xl bg-[var(--surface2)] border border-[var(--border)]"></div>
       <button onclick="toggleTheme()" 
-              class="w-10 h-10 flex items-center justify-center text-2xl hover:scale-110 active:scale-95 rounded-2xl border border-[var(--border)] hover:bg-[var(--surface2)]">
+              class="w-11 h-11 flex items-center justify-center text-2xl hover:bg-[var(--surface2)] rounded-3xl border border-[var(--border)]">
         🌓
       </button>
     </div>
   </div>
 </header>
 
-<main class="max-w-screen-2xl mx-auto px-6 pt-8">
-  
+<main class="max-w-7xl mx-auto px-6 pt-8">
+
   <!-- FILTERS -->
-  <div class="glass card rounded-3xl p-8 mb-10">
+  <div class="glass border border-[var(--border)] rounded-3xl p-8 mb-10">
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
       <div>
-        <label class="block text-xs font-medium tracking-widest text-[var(--muted)] mb-2">DISTRICT</label>
-        <select id="selDistrict" 
-                class="w-full bg-[var(--surface2)] border border-[var(--border)] rounded-2xl px-5 py-4 text-base focus:outline-none focus:border-[var(--accent)] appearance-none">
-        </select>
+        <label class="block text-xs font-semibold tracking-widest text-[var(--muted)] mb-2">DISTRICT</label>
+        <select id="selDistrict" class="w-full bg-[var(--surface2)] border border-[var(--border)] rounded-2xl px-5 py-4 focus:outline-none focus:border-cyan-400 text-base"></select>
       </div>
-      
       <div>
-        <label class="block text-xs font-medium tracking-widest text-[var(--muted)] mb-2">TEHSIL</label>
-        <select id="selTehsil" disabled
-                class="w-full bg-[var(--surface2)] border border-[var(--border)] rounded-2xl px-5 py-4 text-base focus:outline-none focus:border-[var(--accent)] appearance-none">
-        </select>
+        <label class="block text-xs font-semibold tracking-widest text-[var(--muted)] mb-2">TEHSIL</label>
+        <select id="selTehsil" disabled class="w-full bg-[var(--surface2)] border border-[var(--border)] rounded-2xl px-5 py-4 focus:outline-none focus:border-cyan-400 text-base"></select>
       </div>
-      
       <div>
-        <label class="block text-xs font-medium tracking-widest text-[var(--muted)] mb-2">MARKAZ</label>
-        <select id="selMarkaz" disabled
-                class="w-full bg-[var(--surface2)] border border-[var(--border)] rounded-2xl px-5 py-4 text-base focus:outline-none focus:border-[var(--accent)] appearance-none">
-        </select>
+        <label class="block text-xs font-semibold tracking-widest text-[var(--muted)] mb-2">MARKAZ</label>
+        <select id="selMarkaz" disabled class="w-full bg-[var(--surface2)] border border-[var(--border)] rounded-2xl px-5 py-4 focus:outline-none focus:border-cyan-400 text-base"></select>
       </div>
-      
       <div class="flex items-end">
         <button onclick="handleFetch()" id="btnFetch"
-                class="w-full bg-gradient-to-r from-cyan-500 to-emerald-500 hover:from-cyan-600 hover:to-emerald-600 text-white font-semibold py-4 px-8 rounded-3xl flex items-center justify-center gap-x-3 shadow-lg shadow-cyan-500/30 active:scale-[0.97]">
+                class="btn-primary w-full text-white font-semibold py-4 px-8 rounded-3xl flex items-center justify-center gap-3 shadow-lg shadow-cyan-500/40 text-lg">
           <i class="fa-solid fa-bolt"></i>
           <span id="btnText">Fetch Live Data</span>
         </button>
@@ -177,109 +139,97 @@
   </div>
 
   <!-- SUMMARY CARDS -->
-  <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12" id="cardsContainer">
-    <!-- Populated by JS -->
-  </div>
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12" id="cardsContainer"></div>
 
-  <!-- CHARTS -->
-  <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 mb-12">
-    <div class="lg:col-span-3 card rounded-3xl p-7">
-      <div class="flex justify-between items-center mb-6">
-        <h3 class="font-semibold text-lg">Gender Distribution</h3>
-        <div class="text-xs px-4 py-2 rounded-3xl bg-[var(--surface2)]" id="genderPercent"></div>
-      </div>
-      <canvas id="genderChart" class="h-72"></canvas>
-    </div>
-    
-    <div class="lg:col-span-2 card rounded-3xl p-7">
-      <h3 class="font-semibold text-lg mb-6">Top Schools by Enrollment</h3>
-      <canvas id="topSchoolsChart" class="h-72"></canvas>
+  <!-- SEARCH -->
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="title-font text-3xl font-bold tracking-tighter">School Overview</h2>
+    <div class="relative w-full max-w-xs">
+      <input id="searchInput" 
+             onkeyup="filterSchools()"
+             type="text" 
+             placeholder="Search schools..." 
+             class="w-full bg-[var(--surface2)] border border-[var(--border)] rounded-3xl py-4 pl-12 pr-6 focus:outline-none focus:border-cyan-400">
+      <i class="fa-solid fa-magnifying-glass absolute left-5 top-1/2 -translate-y-1/2 text-[var(--muted)]"></i>
     </div>
   </div>
 
-  <!-- TABLES -->
+  <!-- MAIN TABLE (Desktop) + Mobile Cards -->
   <div id="tablesContainer" class="hidden">
-    <div class="flex items-center justify-between mb-6">
-      <h2 class="title-font text-3xl font-semibold tracking-tighter">School Overview</h2>
-      
-      <div class="relative w-80">
-        <input id="searchInput" 
-               onkeyup="filterTable()"
-               type="text" 
-               placeholder="Search schools..." 
-               class="w-full bg-[var(--surface2)] border border-[var(--border)] rounded-3xl py-4 pl-12 pr-6 focus:outline-none focus:border-[var(--accent)]">
-        <i class="fa-solid fa-magnifying-glass absolute left-5 top-1/2 -translate-y-1/2 text-[var(--muted)]"></i>
-      </div>
-    </div>
-
-    <!-- Main Table -->
-    <div class="card rounded-3xl overflow-hidden mb-12">
+    <!-- Desktop Table -->
+    <div class="hidden md:block card border border-[var(--border)] rounded-3xl overflow-hidden bg-[var(--surface)]">
       <div class="overflow-x-auto">
-        <table class="w-full min-w-[800px]">
+        <table class="w-full">
           <thead>
-            <tr class="border-b border-[var(--border)]">
-              <th class="text-left py-6 px-8 font-medium text-sm text-[var(--muted)]">School</th>
-              <th class="text-left py-6 px-8 font-medium text-sm text-[var(--muted)]">EMIS</th>
-              <th class="text-left py-6 px-8 font-medium text-sm text-[var(--muted)]">Level</th>
-              <th class="text-right py-6 px-8 font-medium text-sm text-[var(--muted)]">Boys</th>
-              <th class="text-right py-6 px-8 font-medium text-sm text-[var(--muted)]">Girls</th>
-              <th class="text-right py-6 px-8 font-medium text-sm text-[var(--muted)]">Total</th>
+            <tr class="border-b border-[var(--border)] bg-[var(--surface2)]">
+              <th class="text-left py-6 px-8 font-medium text-[var(--muted)]">School Name</th>
+              <th class="text-left py-6 px-8 font-medium text-[var(--muted)]">EMIS</th>
+              <th class="text-left py-6 px-8 font-medium text-[var(--muted)]">Level</th>
+              <th class="text-right py-6 px-8 font-medium text-[var(--muted)]">Boys</th>
+              <th class="text-right py-6 px-8 font-medium text-[var(--muted)]">Girls</th>
+              <th class="text-right py-6 px-8 font-medium text-[var(--muted)]">Total</th>
             </tr>
           </thead>
-          <tbody id="tbody" class="text-sm"></tbody>
+          <tbody id="tbody" class="text-base"></tbody>
         </table>
       </div>
     </div>
 
-    <!-- Class-wise -->
-    <h2 class="title-font text-3xl font-semibold tracking-tighter mb-6">Class-wise Breakdown</h2>
-    <div class="card rounded-3xl overflow-hidden">
-      <div id="classDetails" class="divide-y divide-[var(--border)]"></div>
-    </div>
+    <!-- Mobile Cards -->
+    <div id="mobileCards" class="md:hidden space-y-4"></div>
 
-    <div class="flex justify-end mt-10">
+    <!-- Class-wise Breakdown -->
+    <h2 class="title-font text-3xl font-bold tracking-tighter mt-16 mb-8">Class-wise Breakdown</h2>
+    <div id="classDetails" class="space-y-8"></div>
+
+    <!-- Export -->
+    <div class="flex justify-center mt-12">
       <button onclick="exportCSV()" 
-              class="flex items-center gap-x-3 bg-white text-black dark:bg-zinc-900 dark:text-white font-medium px-8 py-4 rounded-3xl hover:shadow-xl">
+              class="flex items-center gap-3 bg-white dark:bg-zinc-900 hover:bg-emerald-50 dark:hover:bg-emerald-950 text-black dark:text-white font-semibold px-10 py-5 rounded-3xl shadow-lg">
         <i class="fa-solid fa-download"></i>
-        <span>Download Full Report (CSV)</span>
+        Download Complete Report (CSV)
       </button>
     </div>
   </div>
 </main>
 
-<footer class="text-center text-[var(--muted)] text-xs py-8">
-  PESRP Enrollment Dashboard • Real-time • <span id="lastUpdated"></span>
+<footer class="text-center text-[var(--muted)] text-sm py-10">
+  PESRP Enrollment Dashboard • Live Data • <span id="lastUpdated"></span>
 </footer>
 
 <script>
-// Same data URLs
+// ================== CONFIG ==================
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQFGaSeUAf7BVkqHbcQg91XXeZbrVi8rATTJ-jxmOC1taoFXYvFa5J-LL6-Q1KR-Pz5AMS7tG8Skn2h/pub?gid=2066596328&single=true&output=csv";
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbynghF5JD8hchaG8FWdd12NqaXXMBA2ZZrR5a16CP-kGVPWkzcZtfPx4ywvqGxql3v-QQ/exec";
 
 let allData = [];
 let filteredResults = [];
-let genderChartInstance = null;
-let topSchoolsChartInstance = null;
 
-// Tailwind script already included via CDN
-
+// ================== UTILS ==================
 function toggleTheme() {
   const root = document.documentElement;
-  const current = root.getAttribute('data-theme');
-  root.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+  root.setAttribute('data-theme', root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
 }
 
+function updateHeaderDate() {
+  const now = new Date();
+  document.getElementById('headerDate').innerHTML = `
+    <i class="fa-solid fa-calendar-day mr-2"></i>
+    ${now.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+  `;
+  document.getElementById('lastUpdated').textContent = now.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
+}
+
+// ================== DATA ==================
 async function init() {
   try {
-    const response = await fetch(CSV_URL);
-    const text = await response.text();
+    const res = await fetch(CSV_URL);
+    const text = await res.text();
     allData = parseCSV(text);
-    
     populateDropdown('selDistrict', [...new Set(allData.map(r => r.District))]);
     updateHeaderDate();
   } catch (e) {
-    console.error(e);
-    alert("Failed to load master data");
+    alert("Failed to load data");
   }
 }
 
@@ -302,11 +252,12 @@ function populateDropdown(id, list) {
   el.disabled = false;
 }
 
+// Dropdown chaining
 document.getElementById('selDistrict').addEventListener('change', (e) => {
   const tehsils = [...new Set(allData.filter(r => r.District === e.target.value).map(r => r.Tehsil))];
   populateDropdown('selTehsil', tehsils);
-  document.getElementById('selMarkaz').disabled = true;
   document.getElementById('selMarkaz').innerHTML = '<option value="">Select Tehsil First</option>';
+  document.getElementById('selMarkaz').disabled = true;
 });
 
 document.getElementById('selTehsil').addEventListener('change', (e) => {
@@ -318,221 +269,155 @@ document.getElementById('selMarkaz').addEventListener('change', (e) => {
   document.getElementById('btnFetch').disabled = !e.target.value;
 });
 
-function updateHeaderDate() {
-  const dateEl = document.getElementById('headerDate');
-  const now = new Date();
-  dateEl.innerHTML = `
-    <i class="fa-solid fa-calendar text-emerald-400"></i>
-    ${now.toLocaleDateString('en-GB', {weekday:'short', day:'numeric', month:'short'})}
-  `;
-  document.getElementById('lastUpdated').textContent = now.toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'});
-}
-
+// ================== FETCH & RENDER ==================
 async function handleFetch() {
   const markaz = document.getElementById('selMarkaz').value;
   if (!markaz) return;
-  
+
   const btn = document.getElementById('btnFetch');
   const pb = document.getElementById('progressBar');
-  const originalText = btn.innerHTML;
-  
+  const original = btn.innerHTML;
+
   btn.disabled = true;
-  btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i><span class="ml-2">Fetching live...</span>`;
-  pb.style.width = "70%";
-  
+  btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Fetching...`;
+  pb.style.width = "85%";
+
   try {
-    const response = await fetch(`${SCRIPT_URL}?markaz=${encodeURIComponent(markaz)}`);
-    const result = await response.json();
-    
+    const res = await fetch(`${SCRIPT_URL}?markaz=${encodeURIComponent(markaz)}`);
+    const result = await res.json();
+
     if (result.status === "success") {
       filteredResults = result.data;
       pb.style.width = "100%";
       renderUI();
-      
-      setTimeout(() => {
-        pb.style.width = "0%";
-      }, 800);
+      setTimeout(() => pb.style.width = "0%", 600);
     } else {
-      alert(result.message || "Failed to fetch data");
+      alert(result.message || "Error fetching data");
     }
   } catch (e) {
-    alert("Connection error. Please check your internet.");
+    alert("Connection failed");
   } finally {
     btn.disabled = false;
-    btn.innerHTML = originalText;
+    btn.innerHTML = original;
   }
 }
 
 function renderCards() {
-  const container = document.getElementById('cardsContainer');
-  container.innerHTML = '';
-  
   let total = 0, male = 0, female = 0;
-  
-  filteredResults.forEach(r => {
-    total += r.total || 0;
-    male += r.male || 0;
-    female += r.female || 0;
+  filteredResults.forEach(s => {
+    total += s.total || 0;
+    male += s.male || 0;
+    female += s.female || 0;
   });
-  
-  const cardsHTML = `
-    <div class="card rounded-3xl p-8">
-      <div class="flex justify-between">
+
+  document.getElementById('cardsContainer').innerHTML = `
+    <div class="stat-card bg-[var(--surface)] border border-[var(--border)] rounded-3xl p-8">
+      <div class="flex justify-between items-start">
         <div>
-          <p class="text-xs tracking-widest text-emerald-400 font-medium">TOTAL STUDENTS</p>
-          <p class="stat-value text-white mt-3" id="valTotal">${total.toLocaleString()}</p>
+          <p class="text-emerald-400 text-sm font-semibold tracking-widest">TOTAL</p>
+          <p class="text-5xl font-bold title-font mt-4">${total.toLocaleString()}</p>
         </div>
-        <div class="text-5xl opacity-20">👥</div>
+        <span class="text-6xl opacity-10">👥</span>
       </div>
     </div>
-    
-    <div class="card rounded-3xl p-8 border-l-4 border-cyan-400">
-      <div class="flex justify-between">
+    <div class="stat-card bg-[var(--surface)] border border-[var(--border)] rounded-3xl p-8">
+      <div class="flex justify-between items-start">
         <div>
-          <p class="text-xs tracking-widest text-cyan-400 font-medium">BOYS</p>
-          <p class="stat-value text-cyan-300 mt-3" id="valMale">${male.toLocaleString()}</p>
+          <p class="text-cyan-400 text-sm font-semibold tracking-widest">BOYS</p>
+          <p class="text-5xl font-bold title-font mt-4 text-cyan-300">${male.toLocaleString()}</p>
         </div>
-        <div class="text-5xl opacity-20">👦</div>
+        <span class="text-6xl opacity-10">👦</span>
       </div>
     </div>
-    
-    <div class="card rounded-3xl p-8 border-l-4 border-pink-500">
-      <div class="flex justify-between">
+    <div class="stat-card bg-[var(--surface)] border border-[var(--border)] rounded-3xl p-8">
+      <div class="flex justify-between items-start">
         <div>
-          <p class="text-xs tracking-widest text-pink-400 font-medium">GIRLS</p>
-          <p class="stat-value text-pink-300 mt-3" id="valFemale">${female.toLocaleString()}</p>
+          <p class="text-pink-400 text-sm font-semibold tracking-widest">GIRLS</p>
+          <p class="text-5xl font-bold title-font mt-4 text-pink-300">${female.toLocaleString()}</p>
         </div>
-        <div class="text-5xl opacity-20">👧</div>
+        <span class="text-6xl opacity-10">👧</span>
       </div>
     </div>
   `;
-  
-  container.innerHTML = cardsHTML;
 }
 
-function createGenderChart() {
-  const ctx = document.getElementById('genderChart');
-  if (genderChartInstance) genderChartInstance.destroy();
-  
-  let totalMale = 0, totalFemale = 0;
-  filteredResults.forEach(r => {
-    totalMale += r.male || 0;
-    totalFemale += r.female || 0;
-  });
-  
-  const total = totalMale + totalFemale;
-  document.getElementById('genderPercent').textContent = 
-    `${Math.round(totalFemale/total*100)}% Girls • ${Math.round(totalMale/total*100)}% Boys`;
-  
-  genderChartInstance = new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-      labels: ['Boys', 'Girls'],
-      datasets: [{
-        data: [totalMale, totalFemale],
-        backgroundColor: ['#22d3ee', '#f472b6'],
-        borderColor: '#121a2a',
-        borderWidth: 6,
-        hoverOffset: 20
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { position: 'bottom', labels: { color: 'var(--text)', padding: 25, font: {size: 15} } },
-        tooltip: { backgroundColor: '#1e2937', titleColor: '#e0f2fe' }
-      },
-      cutout: "72%"
-    }
-  });
-}
-
-function createTopSchoolsChart() {
-  const ctx = document.getElementById('topSchoolsChart');
-  if (topSchoolsChartInstance) topSchoolsChartInstance.destroy();
-  
-  const sorted = [...filteredResults]
-    .sort((a,b) => (b.total||0) - (a.total||0))
-    .slice(0, 5);
-  
-  topSchoolsChartInstance = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: sorted.map(s => s.name.length > 18 ? s.name.substring(0,18)+'...' : s.name),
-      datasets: [{
-        label: 'Enrollment',
-        data: sorted.map(s => s.total || 0),
-        backgroundColor: '#22ff88',
-        borderRadius: 12,
-        barThickness: 28
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: {
-        y: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
-        x: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } }
-      }
-    }
-  });
-}
-
-function renderTables() {
+function renderMainTable() {
   const tbody = document.getElementById('tbody');
   tbody.innerHTML = '';
-  
+
   filteredResults.forEach(school => {
-    const row = document.createElement('tr');
-    row.className = "school-row border-b border-[var(--border)] last:border-none hover:bg-[var(--surface2)]";
-    row.innerHTML = `
+    const tr = document.createElement('tr');
+    tr.className = "border-b border-[var(--border)] last:border-none hover:bg-[var(--surface2)]";
+    tr.innerHTML = `
       <td class="py-6 px-8 font-medium">${school.name}</td>
-      <td class="py-6 px-8 font-mono text-xs text-[var(--muted)]">${school.emis}</td>
-      <td class="py-6 px-8">
-        <span class="inline-block px-4 py-1 text-xs rounded-3xl bg-[var(--surface2)]">${school.level}</span>
-      </td>
-      <td class="py-6 px-8 text-right font-medium text-cyan-300">${school.male.toLocaleString()}</td>
-      <td class="py-6 px-8 text-right font-medium text-pink-400">${school.female.toLocaleString()}</td>
+      <td class="py-6 px-8 font-mono text-sm text-[var(--muted)]">${school.emis}</td>
+      <td class="py-6 px-8"><span class="px-4 py-1.5 text-xs rounded-3xl bg-[var(--surface2)]">${school.level}</span></td>
+      <td class="py-6 px-8 text-right font-semibold text-cyan-300">${school.male.toLocaleString()}</td>
+      <td class="py-6 px-8 text-right font-semibold text-pink-400">${school.female.toLocaleString()}</td>
       <td class="py-6 px-8 text-right font-bold text-emerald-400">${school.total.toLocaleString()}</td>
     `;
-    tbody.appendChild(row);
+    tbody.appendChild(tr);
+  });
+}
+
+function renderMobileCards() {
+  const container = document.getElementById('mobileCards');
+  container.innerHTML = '';
+
+  filteredResults.forEach(school => {
+    const div = document.createElement('div');
+    div.className = "mobile-table-card bg-[var(--surface)] border border-[var(--border)] rounded-3xl p-6";
+    div.innerHTML = `
+      <div class="flex justify-between items-start">
+        <div>
+          <div class="font-semibold text-lg">${school.name}</div>
+          <div class="text-xs font-mono text-[var(--muted)]">${school.emis} • ${school.level}</div>
+        </div>
+        <div class="text-right">
+          <div class="text-3xl font-bold text-emerald-400">${school.total}</div>
+          <div class="text-xs text-[var(--muted)]">students</div>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-6 mt-6">
+        <div class="text-center bg-[var(--surface2)] rounded-2xl py-4">
+          <div class="text-cyan-400 text-sm">Boys</div>
+          <div class="text-2xl font-semibold">${school.male}</div>
+        </div>
+        <div class="text-center bg-[var(--surface2)] rounded-2xl py-4">
+          <div class="text-pink-400 text-sm">Girls</div>
+          <div class="text-2xl font-semibold">${school.female}</div>
+        </div>
+      </div>
+    `;
+    container.appendChild(div);
   });
 }
 
 function renderClassDetails() {
   const container = document.getElementById('classDetails');
   container.innerHTML = '';
-  
+
   filteredResults.forEach(school => {
     let html = `
-      <div class="p-8 border-b border-[var(--border)] last:border-none">
-        <div class="flex items-center gap-x-4 mb-6">
-          <div class="font-semibold text-lg">${school.name}</div>
-          <div class="text-xs font-mono bg-[var(--surface2)] px-3 py-1 rounded-2xl">${school.emis}</div>
+      <div class="bg-[var(--surface)] border border-[var(--border)] rounded-3xl p-7">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="font-semibold text-xl">${school.name}</div>
+          <div class="font-mono text-sm bg-[var(--surface2)] px-4 py-1 rounded-3xl">${school.emis}</div>
         </div>
-        
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 text-sm">`;
-    
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">`;
+
     school.details.forEach(cls => {
       html += `
         <div class="bg-[var(--surface2)] rounded-2xl p-5">
-          <div class="text-xs text-[var(--muted)]">${cls.className}</div>
-          <div class="flex justify-between mt-3">
-            <div>
-              <span class="text-cyan-300">${cls.m}</span>
-              <span class="text-xs text-[var(--muted)] ml-1">boys</span>
-            </div>
-            <div>
-              <span class="text-pink-400">${cls.f}</span>
-              <span class="text-xs text-[var(--muted)] ml-1">girls</span>
-            </div>
-            <div class="font-semibold">${cls.t}</div>
+          <div class="text-sm text-[var(--muted)]">${cls.className}</div>
+          <div class="flex justify-between mt-4">
+            <div class="text-cyan-300">${cls.m} <span class="text-xs">boys</span></div>
+            <div class="text-pink-400">${cls.f} <span class="text-xs">girls</span></div>
+            <div class="font-bold">${cls.t}</div>
           </div>
         </div>`;
     });
-    
+
     html += `</div></div>`;
     container.innerHTML += html;
   });
@@ -540,41 +425,44 @@ function renderClassDetails() {
 
 function renderUI() {
   document.getElementById('tablesContainer').classList.remove('hidden');
-  
   renderCards();
-  renderTables();
+  renderMainTable();
+  renderMobileCards();
   renderClassDetails();
-  createGenderChart();
-  createTopSchoolsChart();
 }
 
-function filterTable() {
-  const term = document.getElementById('searchInput').value.toLowerCase().trim();
-  const rows = document.querySelectorAll('#tbody tr');
+function filterSchools() {
+  const term = document.getElementById('searchInput').value.toLowerCase();
   
-  rows.forEach(row => {
-    const schoolName = row.cells[0].textContent.toLowerCase();
-    row.style.display = schoolName.includes(term) ? '' : 'none';
+  // Desktop table
+  document.querySelectorAll('#tbody tr').forEach(row => {
+    const name = row.cells[0].textContent.toLowerCase();
+    row.style.display = name.includes(term) ? '' : 'none';
+  });
+
+  // Mobile cards
+  document.querySelectorAll('#mobileCards > div').forEach(card => {
+    const name = card.textContent.toLowerCase();
+    card.style.display = name.includes(term) ? '' : 'none';
   });
 }
 
 function exportCSV() {
   const markaz = document.getElementById('selMarkaz').value || "Markaz";
-  const timestamp = new Date().toISOString().slice(0, 10);
-  
   let csv = "School Name,EMIS,Level,Class,Male,Female,Total\n";
   
   filteredResults.forEach(r => {
     r.details.forEach(c => {
-      csv += `"${r.name.replace(/"/g, '""')}",${r.emis},"${r.level}","${c.className}",${c.m},${c.f},${c.t}\n`;
+      csv += `"${r.name.replace(/"/g,'""')}",${r.emis},"${r.level}","${c.className}",${c.m},${c.f},${c.t}\n`;
     });
   });
-  
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = `PESRP_${markaz}_${timestamp}.csv`;
-  link.click();
+
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `PESRP_${markaz}_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
 }
 
 // Initialize
